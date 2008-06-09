@@ -85,6 +85,10 @@
                  (expand-file-name "~/.emacs.d/elpa/package.el"))
               (package-initialize)))
 
+(when window-system
+  (require 'mic-paren)
+  (paren-activate))
+
 ;;Unicode naming
 ;(load "unichars")
 ;(load "xmlunicode")

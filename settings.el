@@ -74,7 +74,8 @@
 (when (featurep 'x)
   (setq x-select-enable-clipboard t)
   (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-  (setf x-select-enable-clipboard t))
+  (setf x-select-enable-clipboard t)
+  (my-color-theme))
 
 (set-variable 'visible-bell t)
 
@@ -86,5 +87,3 @@
    cua-enable-register-prefix (quote not-ctrl-u)
    cua-highlight-region-shift-only nil
    cua-keep-region-after-copy nil))
-
-(my-color-theme)
