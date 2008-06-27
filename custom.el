@@ -7,7 +7,6 @@
  '(browse-url-browser-function (quote browse-url-generic))
  '(dired-recursive-copies (quote always))
  '(dired-recursive-deletes (quote top))
- '(global-hl-line-mode nil nil (hl-line))
  '(haskell-program-name "ghci \"+.\"")
  '(haskell-refac-chasePaths (quote ("/home/sigurd/haskellleg" "/home/sigurd/haskellleg/HaRe_20012006/tools/base/tests/HaskellLibraries" "/usr/lib/ghc-6.4.1")))
  '(indent-tabs-mode nil)
