@@ -2,6 +2,9 @@
 (add-to-list 'load-path (concat emacsmoduler-path "/modes/mmm-mode-0.4.8"))
 (add-to-list 'load-path (concat emacsmoduler-path "/modes/haskell-mode-2.3"))
 (add-to-list 'load-path (concat emacsmoduler-path "/modes/emacs-rails"))
+(add-to-list 'load-path (concat emacsmoduler-path "/modes/gnuplot-mode"))
+(add-to-list 'load-path (concat emacsmoduler-path "/modes/org/lisp"))
+(add-to-list 'load-path (concat emacsmoduler-path "/modes/org/contrib"))
 (add-to-list 'load-path (concat emacsmoduler-path "/util"))
 (add-to-list 'load-path (concat emacsmoduler-path "/modes/auctex"))
 
@@ -88,6 +91,11 @@
 (when window-system
   (require 'mic-paren)
   (paren-activate))
+
+(autoload 'gnuplot-mode "gnuplot" "gnuplot major mode" t)
+(autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot mode" t)
+
+(require 'org-install)
 
 ;;Unicode naming
 ;(load "unichars")

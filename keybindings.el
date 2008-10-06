@@ -49,7 +49,13 @@
 
 (global-set-key [(f10)] 'sr-speedbar-toggle)
 
-(global-set-key [(f5)] 'recompile)
+(defun quick-compile ()
+  (interactive)
+  (let
+      ((compilation-read-command nil))
+    (compile (car compile-history))))
+
+(global-set-key [(f5)] 'quick-compile)
 
 
 (global-set-key "\M-\C-g" 'grep)
