@@ -1,0 +1,17 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+% \usepackage[danish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{url}
+
+\title{$1}
+\author{Sigurd Meldgaard}
+\date{` (format-time-string "%d. %B %Y") `}
+\begin{document}
+\maketitle
+\section{Introduction}
+$2
+\end{document}

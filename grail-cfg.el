@@ -17,7 +17,7 @@
 		"org"
 		"python"
 		"xml"
-		"snippet"
+		"snippets"
 		"html"
 		))
 
