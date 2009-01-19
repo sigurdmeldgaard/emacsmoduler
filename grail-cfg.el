@@ -10,7 +10,7 @@
 		"install-elisp"
 		"agda"
 		"javascript"
-		;"latex"
+		"latex"
 		"makefile"
 		"micropython"
 		"mmm"
@@ -18,7 +18,8 @@
 		"python"
 		"xml"
 		"snippet"
-		"html"))
+		"html"
+		))
 
 
 (setq-default user-lisp-root (concat (getenv "HOME") "/emacsmoduler/"))

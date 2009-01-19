@@ -232,16 +232,3 @@ editing control characters:
         (set-buffer-modified-p nil)
         t))))
 
-(eval-after-load 'latex
-  '(add-to-list 'LaTeX-mode-hook
-                (lambda () "Set up snippets"
-                  (define-abbrev-table 'LaTeX-mode-abbrev-table '() "Her kommer snippets!")
-                  (snippet-with-abbrev-table
-                   'LaTeX-mode-abbrev-table
-                   ("SE" . "\\section{$$}")
-                   ("SU" . "\\subsection{$$}")
-                   ("SS" . "\\subsubsection{$$}")
-                   ("MA" . "\\begin{equation}\n\t\n$$\\end{equation}"))
-                  (setq local-abbrev-table LaTeX-mode-abbrev-table)
-                  (abbrev-mode 1))))
-
