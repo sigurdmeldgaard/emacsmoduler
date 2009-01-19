@@ -35,6 +35,7 @@
 (global-set-key "\C-s" 'save-buffer)
 (define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
 (define-key isearch-mode-map "\C-g" 'isearch-repeat-forward)
+(define-key isearch-mode-map [backspace] 'isearch-delete-char)
 
 (global-unset-key "\C-d")
 (set-variable 'kill-whole-line t)
@@ -72,3 +73,11 @@
     (global-set-key "\C-hk" 'describe-key)
     (global-set-key [backspace] 'backward-delete-char-untabify)
     (global-set-key [f4] 'help-map))
+
+
+(global-unset-key "\M-a")
+(global-set-key "\M-a" 'increment-number-at-point)
+(global-set-key "\M-A" (lambda (&optional n)
+			       (interactive "p")
+			       (increment-number-at-point (or (- (abs n))
+							      -1))))

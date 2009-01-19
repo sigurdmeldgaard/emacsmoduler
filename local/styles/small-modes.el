@@ -6,5 +6,6 @@
 (autoload 'peep-mode "peep" nil t)
 (autoload 'speck-mode "speck" nil t)
 (autoload 'russian-mode "russian-mode" nil t)
+(autoload 'tp-file-contents "typist" nil t)
 (load "small")
 

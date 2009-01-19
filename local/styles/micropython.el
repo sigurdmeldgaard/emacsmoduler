@@ -15,3 +15,10 @@
 (add-to-list 'auto-mode-alist
 	     '(".*/micropython.*/.*\\.[ch]$"
 	       . linux-c-mode))
+
+(add-hook 'c-mode-common-hook
+	  '(lambda () (highlight-fixmes-mode 1)))
+
+(add-hook 'c-mode-common-hook
+  (lambda() 
+    (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
