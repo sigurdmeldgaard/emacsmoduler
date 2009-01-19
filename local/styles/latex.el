@@ -16,6 +16,6 @@
 
 (eval-after-load 'latex '(progn
 			   (add-hook 'LaTeX-mode-hook
-					(lambda () ()));(speck-mode 1)))
+				     (lambda () (speck-mode 1)))
 			   (add-hook 'LaTeX-mode-hook
 				     '(lambda () (highlight-fixmes-mode 1)))))
