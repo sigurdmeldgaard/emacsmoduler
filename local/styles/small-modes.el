@@ -8,8 +8,6 @@
 (autoload 'speck-mode "speck" nil t)
 (autoload 'russian-mode "russian-mode" nil t)
 (autoload 'tp-file-contents "typist" nil t)
-(autoload 'sml-mode "sml-mode" "Major mode for editing SML." t)
-(autoload 'run-sml "sml-proc" "Run an inferior SML process." t)
 
 (load "small")
 

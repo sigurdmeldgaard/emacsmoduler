@@ -20,6 +20,7 @@
 		"snippets"
 		"html"
 		"magit"
+		"java"
 		))
 
 
