@@ -1,5 +1,5 @@
-(load "pymacs")
-(load "python")
+;(load "pymacs")
+;(load "python")
 
 ;;(eval-after-load "pymacs"
 ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
@@ -12,7 +12,7 @@
 ;    (setq ropemacs-confirm-saving 'nil))
 
 ;(add-hook 'python-mode-hook 'load-ropemacs)
-(autoload 'pysmell-mode "pysmell" "Code completion for python" t)
+;(autoload 'pysmell-mode "pysmell" "Code completion for python" t)
 
 (when (load "flymake" t)
   (defun flymake-pyflakes-init ()
@@ -26,10 +26,10 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pyflakes-init)))
 
-(setq python-mode-hook nil)
-(add-hook 'python-mode-hook
-          '(lambda () (eldoc-mode 1)))
+;(setq python-mode-hook nil)
+;(add-hook 'python-mode-hook
+;          '(lambda () (eldoc-mode 1)))
 (add-hook 'python-mode-hook
           '(lambda () (flymake-mode 1)))
 
-;(add-hook 'find-file-hook 'flymake-find-file-hook)
+(add-hook 'find-file-hook 'flymake-find-file-hook)

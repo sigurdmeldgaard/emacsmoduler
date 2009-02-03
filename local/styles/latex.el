@@ -14,6 +14,18 @@
 (setq TeX-PDF-mode t)
 (add-to-list 'safe-local-variable-values '((TeX-master . rapport) (TeX-master . "rapport")))
 
+;; Flymake for LaTeX
+(eval-after-load 'flymake
+  '(progn
+     (push
+      '("^\\(\.+\.tex\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
+	1 2 3 4) flymake-err-line-patterns)
+     (defun flymake-get-tex-args (file-name)
+       (list "chktex" (list "-g0" "-r" "-l"
+			    (expand-file-name "~/.chktexrc")
+			    "-I" "-q" "-v0" file-name)))
+     ))
+
 (eval-after-load 'latex '(progn
 			   (add-hook 'LaTeX-mode-hook
 				     (lambda () (speck-mode 1)))
