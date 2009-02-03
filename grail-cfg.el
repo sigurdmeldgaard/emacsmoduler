@@ -19,6 +19,7 @@
 		"xml"
 		"snippets"
 		"html"
+		"magit"
 		))
 
 
