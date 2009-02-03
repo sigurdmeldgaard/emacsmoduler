@@ -3,26 +3,30 @@
 
 (add-to-list (quote auto-mode-alist) (quote ("\\.s\\(ml\\|ig\\)\\'" . sml-mode)))
 
+(defun sml-inside-comment ()
+  (eq (get-text-property (point) 'face)
+		       'font-lock-comment-face))
+
 (defun sml-fill-comment-paragraph (&optional justify)
   "Fill current comment.
 If we're not in a comment, just return nil."
-  (save-excursion
-    (let ((a (comment-beginning))
-	  (fill-prefix
-	   (save-excursion
-	     (next-line)
-	     (beginning-of-line)
-	     (if (eq (get-text-property (point) 'face)
-		       'font-lock-comment-face)
-		 (let ((p (point)))
-		   (search-forward-regexp "^[* \t]*")
-		   (buffer-substring-no-properties p (point)))
-	       fill-prefix)))
-	  (b (progn
-	       (search-forward-regexp comment-end-skip)
-	       (comment-enter-backward))))
-      (fill-region a b)
-      (message (format "hallo%s" (cons a b) )))))
+  (if (sml-inside-comment)
+      (save-excursion
+	(let ((a (comment-beginning))
+	      (fill-prefix
+	       (save-excursion
+		 (next-line)
+		 (beginning-of-line)
+		 (if (sml-inside-comment)
+		     (let ((p (point)))
+		       (search-forward-regexp "^[* \t]*")
+		       (buffer-substring-no-properties p (point)))
+		   fill-prefix)))
+	      (b (progn
+		   (search-forward-regexp comment-end)
+		   (comment-enter-backward))))
+	  (fill-region a b)))
+    nil))
   
 (defun sml-fill-paragraph (&optional justify)
   (or (sml-fill-comment-paragraph justify)
