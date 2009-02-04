@@ -1,4 +1,4 @@
-(setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
 
 (defun yes-or-no-p (prompt)
   "redirects to y-or-n-p"
