@@ -1,4 +1,4 @@
-(setq skeleton-pair t)
+;(setq skeleton-pair t)
 ;(global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
 ;(global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
 ;(global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
@@ -82,3 +82,7 @@
 			       (interactive "p")
 			       (increment-number-at-point (or (- (abs n))
 							      -1))))
+
+;(require 'key-chord)
+;(key-chord-define-global "cv" 'reindent-then-newline-and-indent)
+;(key-chord-define-global "]\" 'reindent-then-newline-and-indent)
