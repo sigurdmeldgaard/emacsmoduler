@@ -21,6 +21,8 @@
 		"html"
 		"magit"
 		"java"
+                "c"
+                "sml"
 		))
 
 
