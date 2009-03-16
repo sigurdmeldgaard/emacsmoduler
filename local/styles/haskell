@@ -1,1 +1,0 @@
-(robust-load-elisp (concat grail-dist-elisp "haskell/haskell-site-file"))
