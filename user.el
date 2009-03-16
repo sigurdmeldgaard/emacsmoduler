@@ -18,3 +18,4 @@
 
 (setq ispell-program-name "aspell")
 
+(require 'fixpath)
