@@ -1,0 +1,31 @@
+;;; For hilighting sml scripts.
+
+(setq sml-hilit-face-translation-table
+      '((sml-struct . bold)
+	(sml-val . bold-italic)
+	(sml-pattern . 	italic)
+	(sml-fn . bold-italic)
+	(sml-keyword . bold)
+	))
+      
+(setq hilit-face-translation-table 
+      (append sml-hilit-face-translation-table hilit-face-translation-table))
+
+(hilit-set-mode-patterns
+ 'sml-mode
+ '(("(\\*" "\\*)" comment)
+;;; This almost works...but I think I'll stick with the parser function 
+;;;("[^?]\\(\"\\(\"\\||\\([^\"]+\\|[\\]\\([\\][\\]\\)*\"\\)*\"\\)\\)" 1 string)
+   (hilit-string-find ?\\ string)
+
+   ("[ \t\n(]\\(functor\\|structure\\|signature\\|sharing\\|abstraction\\)[ \t\n]" "[ \t\n]\\(=\\|:\\|=>\\)[ \t\n]" sml-struct)
+   ("[ \t\n(]\\(val\\|and\\|fun\\|\\(data\\)?type\\)[ \t\n]" "[ \t\n]\\(=\\|:\\|=>\\)[ \t\n]" sml-val)
+   ("[ \t\n(]\\(|\\|fn\\|case\\)[ \t\n]" "[ \t\n]\\(=\\|:\\|=>\\)[ \t\n]" sml-fn)
+
+;;;   ("[ \t\n(]\\(|\\|op\\|let\\|in\\|end\\|andalso\\|orelse\\|\\|while\\|do\\|if\\|then\\|else\\|handle\\|raise\\|exception\\|local\\|open\\|infix\\(r\\)?\\|nonfix\\|sig\\|struct\\)[ \t\n]" 1 sml-keyword)
+   ("[ \t\n(]\\(while\\|do\\|if\\|then\\|else\\|handle\\|raise\\|exception\\)[ \t\n]" 1 sml-keyword)
+   ("[ \t\n(]\\(let\\|in\\|end\\|local\\|sig\\|struct\\)[ \t\n]" 1 sml-keyword)
+   ))
+
+;(substitute-key-definition 'hilit-recenter 'recenter
+;			   (current-global-map))
