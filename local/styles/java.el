@@ -1,7 +1,6 @@
-(add-hook 'java-mode-hook
-	  '(lambda ()
-	     (flymake-mode nil)
-	     (setq indent-tabs-mode nil)))
+(when (featurep 'flymake)
+  (setq flymake-allowed-file-name-masks
+        (remove-if '(lambda (a) (equal (car a) "\\.java\\'")) flymake-allowed-file-name-masks)))
 
 (defun java-mode-untabify ()
   (save-excursion
