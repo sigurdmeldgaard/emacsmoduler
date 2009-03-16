@@ -1,5 +1,6 @@
 (setq-default requested-styles-list
 	      '("anything"
+		"mmm"
 		"coq"
 		"small-modes"
 		"d"
@@ -13,7 +14,6 @@
 		"latex"
 		"makefile"
 		"micropython"
-		"mmm"
 		"org"
 		"python"
 		"xml"
