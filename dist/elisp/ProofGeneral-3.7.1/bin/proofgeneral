@@ -1,0 +1,123 @@
+#!/bin/sh
+#
+# Simple shell script for launching Proof General.
+#
+# Set EMACS to override choice of Emacs version
+# (otherwise script chooses emacs in preference to xemacs)
+#
+# PGHOME must be set to the directory where the lisp files of Proof
+# General are installed.  Script checks standard locations in
+# /usr/share/emacs/site-lisp, or uses PGHOMEDEFAULT defined at top.
+#
+# We load ~/.proofgeneral instead of ~/.emacs if it exists.
+#
+# Thanks to Achim Brucker for suggestions.
+#
+# proofgeneral,v 9.6 2008/07/19 16:10:12 da Exp
+#
+
+# The default path should work if you are using the Proof General RPM
+# or unpack Proof General in your home directory.  Otherwise edit below.
+# NB: no trailing backslash here!
+PGHOMEDEFAULT=$HOME/ProofGeneral
+
+# Try to find a default Emacs executable 
+if [ -z "$EMACS" ] || [ ! -x "$EMACS" ]; then
+    if which emacs > /dev/null; then 
+	EMACS=`which emacs`
+    else 
+	EMACS=`which xemacs`
+    fi
+fi
+
+# Try to find Proof General directory
+if [ -d $PGHOMEDEFAULT ]; then
+    PGHOME=$PGHOMEDEFAULT
+elif [ -d /usr/share/${EMACSVERSION}/site-lisp/proofgeneral ]; then
+    PGHOME=/usr/share/${EMACSVERSION}/site-lisp/proofgeneral
+else
+    echo "Cannot find the Proof General lisp files: please edit script to set PGHOMEDEFAULT correctly."
+    exit 1
+fi
+
+
+NAME=`basename $0`
+
+HELP="Usage: proofgeneral [OPTION] [FILE]...
+Launches Emacs Proof General, editing the proof script FILE.
+
+Options:
+  --emacs	      startup Proof General with emacs (GNU Emacs)
+  --xemacs            startup Proof General with xemacs (XEmacs)
+  --emacsbin <EMACS>  startup Proof General with emacs binary <EMACS>
+  -h, --help          show this help and exit
+  -v, --version       output version information and exit
+
+Unrecognized options are passed to Emacs, along with file names.
+
+Examples:
+  $NAME Example.thy   Load Proof General editing Isar file Example.thy
+  $NAME example.v     Load Proof General editing Coq file Example.v
+
+For documentation and latest versions, visit http://proofgeneral.inf.ed.ac.uk
+Report bugs at http://proofgeneral.inf.ed.ac.uk/trac"
+# 
+
+VERSIONBLURB='David Aspinall.
+
+Copyright (C) 1998-2005 LFCS, University of Edinburgh, UK.
+This is free software; see the source for copying conditions.'
+
+   
+while 
+  case $1 in 
+    -h) 
+	echo "$HELP"
+	exit 0;;
+    --help)
+	echo "$HELP"
+	exit 0;;
+    -v) 
+	VERSION=`grep proof-general-version $PGHOME/generic/proof-site.el | sed -e 's/.*Version //g' | sed -e 's/\. .*//g'`
+	echo "$NAME" "($VERSION)"
+	echo "$VERSIONBLURB"
+	exit 0;;
+    --version) 
+	VERSION=`grep proof-general-version $PGHOME/generic/proof-site.el | sed -e 's/.*Version //g' | sed -e 's/\. .*//g'`
+	echo "$NAME" "($VERSION)"
+	echo "$VERSIONBLURB"
+	exit 0;;
+    --emacs)
+	EMACS=`which emacs`;;
+    --xemacs)
+	EMACS=`which xemacs`;;
+    --emacsbin)
+	EMACS=$2
+	shift;;
+    *) break;;
+  esac
+do shift; done
+
+if [ ! -x "$EMACS" ]; then
+    echo "$NAME: cannot find an Emacs or XEmacs executable.  Set EMACS or your PATH." 1>&2
+    exit 1
+fi
+
+EMACSVERSION=`basename $EMACS`
+
+# Deal with UTF issue
+if [ `locale | grep LC_CTYPE | grep UTF` ]; then
+   echo "Warning: detected Unicode LC_CTYPE setting, switched back to C"
+   echo "         See FAQ for more details."
+   export LC_CTYPE=C
+fi
+
+# User may use .proofgeneral in preference to .emacs or .xemacs/init.el
+if [ -f $HOME/.proofgeneral ]; then
+    STARTUP="-q -l $HOME/.proofgeneral"
+else
+    STARTUP=""
+fi
+
+    
+exec $EMACS $STARTUP -eval "(or (featurep (quote proof-site)) (load \"$PGHOME/generic/proof-site.el\"))" -f proof-splash-display-screen "$@"

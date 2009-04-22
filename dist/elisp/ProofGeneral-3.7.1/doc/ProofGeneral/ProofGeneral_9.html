@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html401/loose.dtd">
+<html>
+<!-- Created on July, 24 2008 by texi2html 1.78 -->
+<!--
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+
+-->
+<head>
+<title>Proof General: 8. LEGO Proof General</title>
+
+<meta name="description" content="Proof General: 8. LEGO Proof General">
+<meta name="keywords" content="Proof General: 8. LEGO Proof General">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 1.78">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.roman {font-family:serif; font-weight:normal;}
+span.sansserif {font-family:sans-serif; font-weight:normal;}
+ul.toc {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="LEGO-Proof-General"></a>
+<a name="SEC56"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="ProofGeneral_8.html#SEC55" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC57" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral_8.html#SEC52" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_10.html#SEC60" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h1 class="chapter"> 8. LEGO Proof General </h1>
+
+<p>LEGO proof script mode is a mode derived from proof script mode for
+editing LEGO scripts. An important convention is that proof script
+buffers <em>must</em> start with a module declaration. If the proof script
+buffer's file name is &lsquo;<tt>fermat.l</tt>&rsquo;, then it must commence with a
+declaration of the form
+</p>
+<table><tr><td>&nbsp;</td><td><pre class="lisp">Module fermat;
+</pre></td></tr></table>
+
+<p>If, in the development of the module &lsquo;<samp>fermat</samp>&rsquo;, you require material
+from other module e.g., &lsquo;<samp>lib_nat</samp>&rsquo; and &lsquo;<samp>galois</samp>&rsquo;, you need to
+specify this dependency as part of the module declaration:
+</p>
+<table><tr><td>&nbsp;</td><td><pre class="lisp">Module fermat Import lib_nat galois;
+</pre></td></tr></table>
+
+<p>No need to worry too much about efficiency. When you retract back to a
+module declaration to add a new import item, LEGO does not actually
+retract the previously imported modules. Therefore, reasserting the
+extended module declaration really only processes the newly imported
+modules.
+</p>
+<p>Using the LEGO Proof General, you never ever need to use administrative
+LEGO commands such as &lsquo;<samp>Forget</samp>&rsquo;, &lsquo;<samp>ForgetMark</samp>&rsquo;, &lsquo;<samp>KillRef</samp>&rsquo;,
+&lsquo;<samp>Load</samp>&rsquo;, &lsquo;<samp>Make</samp>&rsquo;, &lsquo;<samp>Reload</samp>&rsquo; and &lsquo;<samp>Undo</samp>&rsquo; again
+<a name="DOCF8" href="ProofGeneral_fot.html#FOOT8">(8)</a>. 
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#SEC57">8.1 LEGO specific commands</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">      
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC58">8.2 LEGO tags</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">                   
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC59">8.3 LEGO customizations</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">         
+</td></tr>
+</table>
+
+
+<hr size="6">
+<a name="LEGO-specific-commands"></a>
+<a name="SEC57"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC56" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC58" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC56" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC56" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_10.html#SEC60" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 8.1 LEGO specific commands </h2>
+
+<p>In addition to the commands provided by the generic Proof General (as
+discussed in the previous sections) the LEGO Proof General provides a
+few extensions. In proof scripts, there are some abbreviations for
+common commands:
+</p>
+<a name="IDX96"></a>
+<a name="IDX97"></a>
+<a name="IDX98"></a>
+<dl compact="compact">
+<dt> <kbd>C-c C-a C-i</kbd>   </dt>
+<dd><p>intros
+</p></dd>
+<dt> <kbd>C-c C-a C-I</kbd>   </dt>
+<dd><p>Intros
+</p></dd>
+<dt> <kbd>C-c C-a C-R</kbd>   </dt>
+<dd><p>Refine
+</p></dd>
+</dl>
+
+<hr size="6">
+<a name="LEGO-tags"></a>
+<a name="SEC58"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC57" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC59" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC56" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC56" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_10.html#SEC60" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 8.2 LEGO tags </h2>
+
+<p>You
+might want to ask your local system administrator to tag the directories
+&lsquo;<tt>lib_Prop</tt>&rsquo;, &lsquo;<tt>lib_Type</tt>&rsquo; and &lsquo;<tt>lib_TYPE</tt>&rsquo; of the LEGO
+library. See <a href="ProofGeneral_6.html#SEC44">Support for tags</a>, for further details on tags.
+</p>
+
+
+<hr size="6">
+<a name="LEGO-customizations"></a>
+<a name="SEC59"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC58" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_10.html#SEC60" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC56" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC56" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_10.html#SEC60" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 8.3 LEGO customizations </h2>
+
+<p>We refer to chapter <a href="ProofGeneral_7.html#SEC45">Customizing Proof General</a>, for an introduction
+to the customisation mechanism. In addition to customizations at the
+generic level, for LEGO you can also customize:
+</p>
+<dl>
+<dt><u>User Option:</u> <b>lego-tags</b>
+<a name="IDX99"></a>
+</dt>
+<dd><p>The directory of the <var>tags</var> table for the <var>lego</var> library
+</p>
+<p>The default value is <code>&quot;/usr/lib/lego/lib_Type/&quot;</code>.
+</p></dd></dl>
+
+<dl>
+<dt><u>Variable:</u> <b>lego-www-home-page</b>
+<a name="IDX100"></a>
+</dt>
+<dd><p>Lego home page URL.
+</p></dd></dl>
+
+
+
+
+<hr size="6">
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC56" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_10.html#SEC60" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated by <em>David Aspinall</em> on <em>July, 24 2008</em> using <a href="http://www.nongnu.org/texi2html/"><em>texi2html 1.78</em></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>

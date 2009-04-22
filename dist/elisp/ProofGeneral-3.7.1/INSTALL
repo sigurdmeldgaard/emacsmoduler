@@ -1,0 +1,190 @@
+Short Instructions for installing Proof General (details below)
+===============================================================
+
+Proof General runs on a variety of platforms and with a variety of
+Emacs versions; see COMPATIBILITY for further notes.
+
+To install, unpack the distribution somewhere.  It will create a
+top-level directory containing Proof General, called
+Proof-General-<something>.  Put this line in your .emacs file:
+
+    (load-file "<proofgeneral-home>/generic/proof-site.el")
+
+Where <proofgeneral-home> is replaced by the full path name to
+Proof-General-<something>.  If you prefer not to edit .emacs,
+you can use the script in bin/proofgeneral to launch Emacs with 
+Proof General loaded.
+
+The command above will set the Emacs load path and add auto-loads for
+proof assistants, for example, visiting a file ending in .v will start
+Coq Proof General, and a file ending in .thy will start 
+Isabelle/Isar Proof General.  See the manual for a full list of file
+extensions and proof assistants, and the note below for how to disable
+those you don't need.
+
+In case of difficulty, please check the documentation in doc/, the
+notes below, the README file for each prover, and the file BUGS.  
+
+If none of these files help, then contact me via the address below.
+
+   David Aspinall,
+   LFCS, School Of Informatics,
+   University of Edinburgh.
+   Edinburgh.
+   
+   http://proofgeneral.inf.ed.ac.uk/trac
+
+
+
+Detailed installation Notes for Proof General
+=============================================
+
+Supported Emacs Versions.
+-------------------------
+
+This release has been tested with XEmacs 21.4.17 and GNU Emacs 21.3.1
+(running on i386 Linux).  We recommend using these or later versions.  
+
+If you're not sure of your version of Emacs, inspect the
+variable `emacs-version' by doing:
+
+  C-h C-v emacs-version RET
+
+Other *recent* versions of either Emacs may also work, but please do
+not send bug reports for any version of Emacs which is more than a
+year older than the most recent stable release of that Emacs, unless
+you are reasonably sure that the bug has something to do with Proof
+General rather than Emacs.  Unfortunately, compatibility across
+different Emacs versions is very difficult to maintain as APIs change
+frequently and bugs come and go between Emacs releases.
+
+
+
+RPM packages.
+------------
+
+The RPMs are intended to be compatible with the RPMs distributed with
+Red Hat/Fedora.  Three packages are provided: ProofGeneral,
+ProofGeneral-emacs-elc and ProofGeneral-xemacs-elc.  The two elc RPMs
+contain compiled elisp for GNU Emacs and XEmacs respectively.
+
+You should have a fully working ProofGeneral if you just install the
+main package.  The byte compiled files will provide extra
+performance on the respective Emacs versions.
+
+The command "proofgeneral" will launch Emacs with Proof General
+loaded.  If you install the byte compiled files, Proof General should
+be automatically added to your Emacs startup configuration: you can
+just launch an Emacs and edit a proof script file to get going.
+
+If you want to add the uncompiled Proof General version to your
+personal Emacs configuration, add this line:
+
+  (load-file "/usr/share/emacs/ProofGeneral/generic/proof-site.el")
+
+to your .emacs file.
+
+
+Byte Compilation.
+-----------------
+
+Compilation of the Emacs lisp files improves efficiency but can
+sometimes cause compatibility problems.  In particular, byte compiled
+files are generally not compatible between XEmacs and GNU Emacs.
+
+We distribute .elcs for GNU Emacs, so you will have to delete
+them and (optionally) recompile for XEmacs.
+
+Use 'make clean' to remove all .elc files.  
+Use 'make compile' to recompile .elc files.
+
+Check that the Makefile sets EMACS to your Emacs executable.
+
+
+
+Dependency on Other Emacs Packages
+----------------------------------
+
+Proof General relies on several other Emacs packages, which are
+probably already supplied with your version of Emacs.  If not, you
+will need to find them.  XEmacs is sometimes unbundled, so you may
+need to select packages (or package groups) specially.  These are the
+packages that you need to use Proof General:
+
+ ESSENTIAL:
+  * cl-macs
+  * comint	
+  * custom
+  * font-lock
+  * xml		[ not yet essential but will be soon ]
+
+ OPTIONAL:
+  * outline
+  * func-menu or imenu
+
+If in doubt and you have the option, select the aptly named XEmacs
+"sumo" package.
+
+The X Symbol package is now bundled with Proof General so you
+do not need to download it separately.
+
+
+
+
+Site-wide Installation
+----------------------
+
+If you are installing Proof General site-wide, you can put the
+components in the standard directories of the filesystem if you
+prefer, providing the variables in proof-site.el are adjusted
+accordingly.  Make sure that the generic and assistant-specific elisp
+files are kept in subdirectories of `proof-home-directory' so that the
+autoload directory calculations are correct.
+
+To save every user needing the line in their .emacs file, you can put
+that into a site-wide file like default.el, or using an automatically
+loaded file stored under site-start.d, if your distribution provides
+that.  
+
+The provided Makefile will install everything in default locations:
+
+	make install
+
+Will copy elisp, compiled elisp, documentation, and the "proofgeneral"
+shell script into perhaps sensible places.  Try with "-n" or examine
+the Makefile carefully before use.
+
+  
+
+Removing support for unwanted provers
+-------------------------------------
+
+You cannot run more than one instance of Proof General at a time in
+the same Emacs process: e.g. if you're using Coq, you won't be able to
+run LEGO scripts.
+
+If there are some assistants supported that you never want to use, you
+can remove them from the variable `proof-assistants' to prevent Proof
+General autoloading for files with particular extensions.  This may be
+useful if you want to use other modes for those files, for example,
+you may want sml-mode for .ML files or Verilog mode for .v files.
+
+The easiest way to do this (and other customization of Proof General)
+is via the Customize mechanism, see the menu:
+
+  Options -> Customize -> Emacs -> External -> Proof General
+
+or, after loading Proof General, in a proof script buffer
+
+  Proof-General -> Customize
+
+You may need extra customization depending on the proof assistant (for
+example, the name of the proof assistant binary).  See the menu
+
+  Proof-General -> Customize -> <Name of Assistant>
+
+and the manual for more details.
+
+
+--------------------------------------------------------------------------
+INSTALL,v 9.3 2008/07/10 18:26:13 da Exp

@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html401/loose.dtd">
+<html>
+<!-- Created on July, 24 2008 by texi2html 1.78 -->
+<!--
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+
+-->
+<head>
+<title>Adapting Proof General: 10. Configuring Font Lock</title>
+
+<meta name="description" content="Adapting Proof General: 10. Configuring Font Lock">
+<meta name="keywords" content="Adapting Proof General: 10. Configuring Font Lock">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 1.78">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.roman {font-family:serif; font-weight:normal;}
+span.sansserif {font-family:sans-serif; font-weight:normal;}
+ul.toc {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Configuring-Font-Lock"></a>
+<a name="SEC33"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="PG-adapting_10.html#SEC32" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_12.html#SEC34" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="PG-adapting_10.html#SEC32" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting.html#SEC_Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_12.html#SEC34" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="PG-adapting.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_17.html#SEC57" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h1 class="chapter"> 10. Configuring Font Lock </h1>
+
+<p>Support for Font Lock in Proof General is described in the user manual
+(see the <i>Syntax highlighting</i> section).  To configure Font Lock for a
+new proof assistant, you need to set the variable
+<code>font-lock-keywords</code> in each of the mode functions you want
+highlighting for.  Proof General will automatically install these
+settings, and use font lock minor mode (for syntax highlighting as you
+type) in script buffers.
+</p>
+<p>To understand its format, check the documentation of
+<code>font-lock-keywords</code> inside Emacs.
+</p>
+<p>Instead of setting <code>font-lock-keywords</code> in each mode function, you
+can use the following four variables to make the settings in place.
+This is particularly useful if use the easy configuration mechanism for
+Proof General, see section <a href="PG-adapting_2.html#SEC6">Demonstration instance and easy configuration</a>.
+</p>
+<dl>
+<dt><u>Variable:</u> <b>proof-script-font-lock-keywords</b>
+<a name="IDX126"></a>
+</dt>
+<dd><p>Value of &lsquo;<samp><code>font-lock-keywords</code></samp>&rsquo; used to fontify proof scripts.<br>
+This is currently used only by &lsquo;<samp><code>proof-easy-config</code></samp>&rsquo; mechanism,
+to set &lsquo;<samp><code>font-lock-keywords</code></samp>&rsquo; before calling <code>proof-config-done</code>.
+See also proof-{shell,resp,goals}-<code>font-lock-keywords</code>.
+</p></dd></dl>
+<dl>
+<dt><u>Variable:</u> <b>proof-shell-font-lock-keywords</b>
+<a name="IDX127"></a>
+</dt>
+<dd><p>Value of &lsquo;<samp><code>font-lock-keywords</code></samp>&rsquo; used to fontify the proof shell.<br>
+This is currently used only by &lsquo;<samp><code>proof-easy-config</code></samp>&rsquo; mechanism, to set
+&lsquo;<samp><code>font-lock-keywords</code></samp>&rsquo; before calling &lsquo;<samp><code>proof-config-done</code></samp>&rsquo;.
+See also proof-{script,resp,goals}-<code>font-lock-keywords</code>.
+</p></dd></dl>
+<dl>
+<dt><u>Variable:</u> <b>proof-goals-font-lock-keywords</b>
+<a name="IDX128"></a>
+</dt>
+<dd><p>Value of &lsquo;<samp><code>font-lock-keywords</code></samp>&rsquo; used to fontify the goals output.<br>
+NB: the goals output is not kept in font lock mode because the
+fontification may rely on annotations which are erased before
+displaying.  This means internal functions of PG must be used
+to display to the goals buffer to ensure fontification is done!
+This is currently used only by &lsquo;<samp><code>proof-easy-config</code></samp>&rsquo; mechanism,
+to set &lsquo;<samp><code>font-lock-keywords</code></samp>&rsquo; before calling <code>proof-config-done</code>.
+See also proof-{script,shell,resp}-<code>font-lock-keywords</code>.
+</p></dd></dl>
+<dl>
+<dt><u>Variable:</u> <b>proof-resp-font-lock-keywords</b>
+<a name="IDX129"></a>
+</dt>
+<dd><p>Value of &lsquo;<samp><code>font-lock-keywords</code></samp>&rsquo; used to fontify the response output.<br>
+NB: the goals output is not kept in font lock mode because the
+fontification may rely on annotations which are erased before
+displaying.  This means internal functions of PG must be used
+to display to the goals buffer to ensure fontification is done!
+This is currently used only by <code>proof-easy-config</code> mechanism,
+to set <code>font-lock-keywords</code> before calling <code>proof-config-done</code>.
+See also proof-{script,shell,resp}-<code>font-lock-keywords</code>.
+</p></dd></dl>
+<p>Proof General provides a special function, <code>proof-zap-commas</code>, for
+tweaking the font lock behaviour of provers which have declarations of
+the form <code>x,y,z:Ty</code>.  This function removes highlighting on the
+commas, and can be added as the last element of
+<code>font-lock-keywords</code>.  Further manipulation of font lock behaviour
+can be achieved via two hook functions which are run before and after
+fontifying the output buffers.
+</p>
+<dl>
+<dt><u>Function:</u> <b>proof-zap-commas</b><i> limit</i>
+<a name="IDX130"></a>
+</dt>
+<dd><p>Remove the face of all &lsquo;<samp>,</samp>&rsquo; from point to <var>limit</var>.<br>
+Meant to be used from &lsquo;<samp><code>font-lock-keywords</code></samp>&rsquo;.
+</p></dd></dl>
+
+<dl>
+<dt><u>Variable:</u> <b>pg-before-fontify-output-hook</b>
+<a name="IDX131"></a>
+</dt>
+<dd><p>This hook is called before fontifying a region in an output buffer.<br>
+A function on this hook can alter the region of the buffer within
+the current restriction, and must return the final value of (<code>point-max</code>).
+[This hook is presently only used by phox-sym-lock].
+</p></dd></dl>
+
+<dl>
+<dt><u>Variable:</u> <b>pg-after-fontify-output-hook</b>
+<a name="IDX132"></a>
+</dt>
+<dd><p>This hook is called before fonfitying a region in an output buffer.<br>
+[This hook is presently only used by Isabelle].
+</p></dd></dl>
+
+
+
+<hr size="6">
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="PG-adapting_10.html#SEC32" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_12.html#SEC34" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="PG-adapting.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_17.html#SEC57" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated by <em>David Aspinall</em> on <em>July, 24 2008</em> using <a href="http://www.nongnu.org/texi2html/"><em>texi2html 1.78</em></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>

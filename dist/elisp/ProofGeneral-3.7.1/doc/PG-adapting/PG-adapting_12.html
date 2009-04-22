@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html401/loose.dtd">
+<html>
+<!-- Created on July, 24 2008 by texi2html 1.78 -->
+<!--
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+
+-->
+<head>
+<title>Adapting Proof General: 11. Configuring X-Symbol</title>
+
+<meta name="description" content="Adapting Proof General: 11. Configuring X-Symbol">
+<meta name="keywords" content="Adapting Proof General: 11. Configuring X-Symbol">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 1.78">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.roman {font-family:serif; font-weight:normal;}
+span.sansserif {font-family:sans-serif; font-weight:normal;}
+ul.toc {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Configuring-X_002dSymbol"></a>
+<a name="SEC34"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="PG-adapting_11.html#SEC33" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_13.html#SEC35" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="PG-adapting_11.html#SEC33" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting.html#SEC_Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_13.html#SEC35" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="PG-adapting.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_17.html#SEC57" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h1 class="chapter"> 11. Configuring X-Symbol </h1>
+
+<p>The X-Symbol package is described in the Proof General user manual.  To
+configure X-Symbol for Proof General, you must understand a little bit
+of how X-Symbol works: read the documentation that is supplied with it.
+</p>
+<p>The basic task is to set up a <i>token language</i> for your proof
+assistant.  If your assistant is stored in the subdirectory
+<var>myprover</var>, the token language will be called <var>myprover</var> and be
+defined in a file &lsquo;<tt>x-symbol-<var>myprover</var>.el</tt>&rsquo; which is
+automatically loaded by X-Symbol.  The name of the token language mode
+will be <code><var>myprover</var>sym</code>.
+</p>
+<p>Proof General will check that the file &lsquo;<tt>x-symbol-<var>myprover</var>.el</tt>&rsquo;
+exists and set up X-Symbol to load it.  The token language file must
+define a number of standard settings, and X-Symbol will give warnings if
+any of them are missing.
+</p>
+<p>Apart from the token language file, there are several settings for
+X-Symbol which you can set in the usual configuration file
+&lsquo;<tt><var>myprover</var>.el</tt>&rsquo;.  These settings are optional.
+</p>
+
+<dl>
+<dt><u>Variable:</u> <b>proof-xsym-activate-command</b>
+<a name="IDX133"></a>
+</dt>
+<dd><p>Command to activate token input/output for X-Symbol.<br>
+If non-nil, this command is sent to the proof assistant when
+X-Symbol support is activated.
+</p></dd></dl>
+
+<dl>
+<dt><u>Variable:</u> <b>proof-xsym-deactivate-command</b>
+<a name="IDX134"></a>
+</dt>
+<dd><p>Command to deactivate token input/output for X-Symbol.<br>
+If non-nil, this command is sent to the proof assistant when
+X-Symbol support is deactivated.
+</p></dd></dl>
+
+<p>We expect tokens to be used uniformly, so that along with each script
+mode buffer, the response buffer and goals buffer also invoke X-Symbol
+to display special characters in the same token language.  This happens
+automatically.  If you want additional modes to use X-Symbol with the
+token language for your proof assistant, you can set
+<code>proof-xsym-extra-modes</code>.
+</p>
+<dl>
+<dt><u>Variable:</u> <b>proof-xsym-extra-modes</b>
+<a name="IDX135"></a>
+</dt>
+<dd><p>List of additional mode names to use X-Symbol with Proof General tokens.<br>
+These modes will have X-Symbol enabled for the proof assistant token language,
+in addition to the four modes for Proof General (script, shell, response, pbp).
+</p>
+<p>Set this variable if you want additional modes to also display
+tokens (for example, editing documentation or source code files).
+</p></dd></dl>
+
+
+
+<hr size="6">
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="PG-adapting_11.html#SEC33" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_13.html#SEC35" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="PG-adapting.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_17.html#SEC57" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="PG-adapting_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated by <em>David Aspinall</em> on <em>July, 24 2008</em> using <a href="http://www.nongnu.org/texi2html/"><em>texi2html 1.78</em></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>

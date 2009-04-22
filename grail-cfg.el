@@ -1,7 +1,7 @@
 (setq-default requested-styles-list
 	      '("anything"
 		"mmm"
-		"coq"
+		"proofgeneral"
 		"small-modes"
 		"d"
 		"factor"
@@ -23,6 +23,7 @@
 		"java"
                 "c"
                 "sml"
+                "sage"
 		))
 
 

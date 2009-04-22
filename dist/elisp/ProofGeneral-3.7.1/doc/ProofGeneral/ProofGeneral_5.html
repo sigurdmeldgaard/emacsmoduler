@@ -1,0 +1,643 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html401/loose.dtd">
+<html>
+<!-- Created on July, 24 2008 by texi2html 1.78 -->
+<!--
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+
+-->
+<head>
+<title>Proof General: 4. Advanced Script Management and Editing</title>
+
+<meta name="description" content="Proof General: 4. Advanced Script Management and Editing">
+<meta name="keywords" content="Proof General: 4. Advanced Script Management and Editing">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 1.78">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.roman {font-family:serif; font-weight:normal;}
+span.sansserif {font-family:sans-serif; font-weight:normal;}
+ul.toc {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Advanced-Script-Management-and-Editing"></a>
+<a name="SEC27"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="ProofGeneral_4.html#SEC26" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC28" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral_4.html#SEC25" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h1 class="chapter"> 4. Advanced Script Management and Editing </h1>
+
+<p>If you are working with large proof developments, you may want to know
+about the advanced script management and editing features of Proof
+General covered in this chapter.
+</p>
+<p>Large developments may contain files with many long proofs.  Proof
+General provides functions that let you hide completed proofs from view,
+temporarily.  
+</p>
+<p>Large proof developments are typically spread across various files which
+depend on each other in some way.  Proof General knows enough about the
+dependencies to allow script management across multiple files.  With
+large developments particularly, users may occasionally need to escape
+from script management, in case Proof General loses synchronization with
+the proof assistant.  Proof General provides you with several escape
+mechanisms if you want to do this.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top"><a href="#SEC28">4.1 Visibility of completed proofs</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC29">4.2 Switching between proof scripts</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">  
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC30">4.3 View of processed files</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">    
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC31">4.4 Retracting across files</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">     
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC32">4.5 Asserting across files</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">      
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC33">4.6 Automatic multiple file handling</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC34">4.7 Escaping script management</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC35">4.8 Editing features</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top"><a href="#SEC36">4.9 Experimental features</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+<hr size="6">
+<a name="Visibility-of-completed-proofs"></a>
+<a name="SEC28"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC27" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC29" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.1 Visibility of completed proofs </h2>
+
+<p>Large developments may consist of large files with many proofs.  To help
+see what has been proved without the detail of the proof itself, Proof
+General can hide portions of the proof script.  Two different kinds of
+thing can be hidden: comments and (what Proof General designates as) the
+body of proofs.
+</p>
+<p>You can toggle the visibility of a proof script portion by using the
+context sensitive menu triggered by <b>clicking the right mouse button
+on a completed proof</b>, or the key <kbd>C-c v</kbd>, which runs
+<code>pg-toggle-visibility</code>.
+</p>
+<p>You can also select the &ldquo;disappearing proofs&rdquo; mode from the menu,
+</p><table><tr><td>&nbsp;</td><td><pre class="lisp">  Proof-General -&gt; Options -&gt; Disappearing Proofs
+</pre></td></tr></table>
+
+<p>This automatically hides each the body of each proof portion
+as it is completed by the proof assistant.
+Two further menu commands in the main Proof-General menu,
+<em>Show all</em> and <em>Hide all</em> apply to all the completed
+portions in the buffer.
+</p>
+<p>Notice that by design, this feature only applies to completed proofs,
+<em>after</em> they have been processed by the proof assistant.  When
+files are first visited in Proof General, no information is stored about
+proof boundaries.
+</p>
+<p>The relevant elisp functions and settings are mentioned below.
+</p>
+<dl>
+<dt><u>Command:</u> <b>pg-toggle-visibility</b>
+<a name="IDX39"></a>
+</dt>
+<dd><p>Toggle visibility of region under point.
+</p></dd></dl>
+
+<dl>
+<dt><u>Command:</u> <b>pg-show-all-proofs</b>
+<a name="IDX40"></a>
+</dt>
+<dd><p>Display all completed proofs in the buffer.
+</p></dd></dl>
+
+<dl>
+<dt><u>Command:</u> <b>pg-hide-all-proofs</b>
+<a name="IDX41"></a>
+</dt>
+<dd><p>Hide all completed proofs in the buffer.
+</p></dd></dl>
+
+<dl>
+<dt><u>User Option:</u> <b>proof-disappearing-proofs</b>
+<a name="IDX42"></a>
+</dt>
+<dd><p>Non-nil causes Proof General to hide proofs as they are completed.
+</p>
+<p>The default value is <code>nil</code>.
+</p></dd></dl>
+
+
+<hr size="6">
+<a name="Switching-between-proof-scripts"></a>
+<a name="SEC29"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC28" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC30" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.2 Switching between proof scripts </h2>
+
+<p>Basic modularity in large proof developments can be achieved by
+splitting proof scripts across various files. Let's assume that you are
+in the middle of a proof development. You are working on a soundness
+proof of Hoare Logic in a file called<a name="DOCF5" href="ProofGeneral_fot.html#FOOT5">(5)</a> &lsquo;<tt>HSound.l</tt>&rsquo;. It
+depends on a number of other files which develop underlying
+concepts e.g. syntax and semantics of expressions, assertions,
+imperative programs. You notice that the current lemma is too difficult
+to prove because you have forgotten to prove some more basic properties
+about determinism of the programming language. Or perhaps a previous
+definition is too cumbersome or even wrong.
+</p>
+<p>At this stage, you would like to visit the appropriate file, say
+&lsquo;<tt>sos.l</tt>&rsquo; and retract to where changes are required. Then, using
+script management, you want to develop some more basic theory in
+&lsquo;<tt>sos.l</tt>&rsquo;. Once this task has been completed (possibly involving
+retraction across even earlier files) and the new development has been
+asserted, you want to switch back to &lsquo;<tt>HSound.l</tt>&rsquo; and replay to the
+point you got stuck previously.
+</p>
+<p>Some hours (or days) later you have completed the soundness proof and
+are ready to tackle new challenges. Perhaps, you want to prove a
+property that builds on soundness or you want to prove an orthogonal
+property such as completeness.
+</p>
+<p>Proof General lets you do all of this while maintaining the consistency
+between proof script buffers and the state of the proof assistant.
+However, you cannot have more than one buffer where only a fraction of
+the proof script contains a locked region. Before you can employ script
+management in  another proof script buffer, you must either fully assert
+or retract the current script buffer.
+</p>
+<hr size="6">
+<a name="View-of-processed-files"></a>
+<a name="SEC30"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC29" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC31" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.3 View of processed files </h2>
+
+<p>Proof General tries to be aware of all files that the proof assistant
+has processed or is currently processing.  In the best case, it relies
+on the proof assistant explicitly telling it whenever it processes a new
+file which corresponds<a name="DOCF6" href="ProofGeneral_fot.html#FOOT6">(6)</a> to a file
+containing a proof script.
+</p>
+<p>If the current proof script buffer depends on background material from
+other files, proof assistants typically process these files
+automatically. If you visit such a file, the whole file is locked as
+having been processed in a single step.  From the user's point of view,
+you can only retract but not assert in this buffer. Furthermore,
+retraction is only possible to the <em>beginning</em> of the buffer.
+</p>
+<p>Unlike a script buffer that has been processed step-by-step via Proof
+General, automatically loaded script buffers do not pass through a
+&ldquo;red&rdquo; phase to indicate that they are currently being processed.  This
+is a limitation of the present implementation.  Proof General locks a
+buffer as soon as it sees the appropriate message from the proof
+assistant.  Different proof assistants may use different messages:
+either <em>early locking</em> when processing a file begins (e.g. LEGO) or
+<em>late locking</em> when processing a file ends (e.g. Isabelle).
+</p>
+<p>With <em>early locking</em>, you may find that a script which has only
+been partly processed (due to an error or interrupt, for example), is
+wrongly completely locked by Proof General.  Visit the file and retract
+back to the start to fix this.
+</p>
+<p>With <em>late locking</em>, there is the chance that you can break
+synchronization by editing a file as it is being read by the proof
+assistant, and saving it before processing finishes.
+</p>
+<p>In fact, there is a general problem of editing files which may be
+processed by the proof assistant automatically.  Synchronization can be
+broken whenever you have unsaved changes in a proof script buffer and
+the proof assistant processes the corresponding file.  (Of course, this
+problem is familiar from program development using separate editors
+and compilers).  The good news is that Proof General can detect the
+problem and flashes up a warning in the response buffer.  You can then
+visit the modified buffer, save it and retract to the beginning. Then
+you are back on track.
+</p>
+
+
+
+
+<hr size="6">
+<a name="Retracting-across-files"></a>
+<a name="SEC31"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC30" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC32" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.4 Retracting across files </h2>
+
+<p>Make sure that the current script buffer has either been completely
+asserted or retracted (Proof General enforces this).  Then you can
+retract proof scripts in a different file. Simply visit a file that has
+been processed earlier and retract in it, using the retraction commands
+from see section <a href="ProofGeneral_3.html#SEC21">Script processing commands</a>. Apart from removing parts of the
+locked region in this buffer, all files which depend on it will be
+retracted (and thus unlocked) automatically. Proof General reminds you
+that now is a good time to save any unmodified buffers.
+</p>
+<hr size="6">
+<a name="Asserting-across-files"></a>
+<a name="SEC32"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC31" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC33" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.5 Asserting across files </h2>
+
+<p>Make sure that the current script buffer has either been completely
+asserted or retracted. Then you can assert proof scripts in a different
+file. Simply visit a file that contains no locked region and assert some
+command with the usual assertion commands, see section <a href="ProofGeneral_3.html#SEC21">Script processing commands</a>. Proof General reminds you that now is a good time to save any
+unmodified buffers.  This is particularly useful as assertion may cause
+the proof assistant to automatically process other files.
+</p>
+
+<hr size="6">
+<a name="Automatic-multiple-file-handling"></a>
+<a name="SEC33"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC32" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC34" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.6 Automatic multiple file handling </h2>
+
+<p>To make it easier to adapt Proof General for a proof assistant, there is
+another possibility for multiple file support &mdash; that it is provided
+automatically by Proof General and not integrated with the
+file-management system of the proof assistant.
+</p>
+<p>In this case, Proof General assumes that the only files processed are
+the ones it has sent to the proof assistant itself.  Moreover, it
+(conservatively) assumes that there is a linear dependency between files
+in the order they were processed.
+</p>
+<p>If you only have automatic multiple file handling, you'll find that any
+files loaded directly by the proof assistant are <em>not</em> locked when
+you visit them in Proof General.  Moreover, if you retract a file it may
+retract more than is strictly necessary (because it assumes a linear
+dependency).
+</p>
+<p>For further technical details of the ways multiple file scripting is
+configured, see <i>Handling multiple files</i> in
+the <i>Adapting Proof General</i> manual.
+</p>
+
+
+<hr size="6">
+<a name="Escaping-script-management"></a>
+<a name="SEC34"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC33" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC35" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.7 Escaping script management </h2>
+
+<p>Occasionally you may want to review the dialogue of the entire session
+with the proof assistant, or check that it hasn't done something
+unexpected.  Experienced users may also want to directly communicate
+with the proof assistant rather than sending commands via the
+minibuffer, see section <a href="ProofGeneral_3.html#SEC22">Proof assistant commands</a>.
+</p>
+<p>Although the proof shell is usually hidden from view, it is run in a
+buffer which provides the usual full editing and history facilities of
+Emacs shells (see the package &lsquo;<tt>comint.el</tt>&rsquo; distributed with your
+version of Emacs). You can switch to it using the menu:
+</p>
+<table><tr><td>&nbsp;</td><td><pre class="lisp">  Proof-General -&gt; Buffers -&gt; Shell
+</pre></td></tr></table>
+
+<p><b>Warning:</b> you can probably cause confusion by typing in the shell
+buffer!  Proof General may lose track of the state of the proof
+assistant.  Output from the assistant is only fully monitored when Proof
+General is in control of the shell.
+When in control, Proof General watches the output from the proof
+assistant to guess when a file is loaded or when a proof step is taken
+or undone.  What happens when you type in the shell buffer directly
+depends on how complete the communication is between Proof General and
+the prover (which depends on the particular instantiation of Proof
+General).
+</p>
+<p>If synchronization is lost, you have two options to resynchronize. If
+you are lucky, it might suffice to use the key:
+</p>
+<dl compact="compact">
+<dt> <kbd>C-c C-z</kbd></dt>
+<dd><p><code>proof-frob-locked-end</code>
+</p></dd>
+</dl>
+
+<p>This command is disabled by default, to protect novices using it
+accidently.
+</p>
+<p>If <code>proof-frob-locked-end</code> does not work, you will need to restart
+script management altogether (see section <a href="ProofGeneral_3.html#SEC22">Proof assistant commands</a>).
+</p>
+<dl>
+<dt><u>Command:</u> <b>proof-frob-locked-end</b>
+<a name="IDX43"></a>
+</dt>
+<dd><p>Move the end of the locked region backwards to regain synchronization.<br>
+Only for use by consenting adults.
+</p>
+<p>This command can be used to repair synchronization in case something
+goes wrong and you want to tell Proof General that the proof assistant
+has processed less of your script than Proof General thinks.
+</p>
+<p>You should only use it to move the locked region to the end of
+a proof command.
+</p></dd></dl>
+
+
+<hr size="6">
+<a name="Editing-features"></a>
+<a name="SEC35"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC34" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC36" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.8 Editing features </h2>
+
+<p>To make editing proof scripts more productive, Proof General provides
+some additional editing commands.
+</p>
+<p>One facility is the <i>input ring</i> of previously processed commands.
+This allows a convenient way of repeating an earlier command or a small
+edit of it.  The feature is reminiscent of history mechanisms provided
+in shell terminals (and the implementation is borrowed from the Emacs
+Comint package).  The input ring only contains commands which have been
+successfully processed (coloured blue).  Duplicated commands are only
+entered once.  
+The size of the ring is set by the variable <code>pg-input-ring-size</code>.
+</p>
+<a name="IDX44"></a>
+<a name="IDX45"></a>
+<dl compact="compact">
+<dt> <kbd>M-p</kbd></dt>
+<dd><p><code>pg-previous-matching-input-from-input</code>
+</p></dd>
+<dt> <kbd>M-n</kbd></dt>
+<dd><p><code>pg-next-matching-input-from-input</code>
+</p></dd>
+</dl>
+
+
+<dl>
+<dt><u>Command:</u> <b>pg-previous-input</b><i> arg</i>
+<a name="IDX46"></a>
+</dt>
+<dd><p>Cycle backwards through input history, saving input.
+</p></dd></dl>
+<dl>
+<dt><u>Command:</u> <b>pg-next-input</b><i> arg</i>
+<a name="IDX47"></a>
+</dt>
+<dd><p>Cycle forwards through input history.
+</p></dd></dl>
+<dl>
+<dt><u>Command:</u> <b>pg-previous-matching-input</b><i> regexp n</i>
+<a name="IDX48"></a>
+</dt>
+<dd><p>Search backwards through input history for match for <var>regexp</var>.<br>
+(Previous history elements are earlier commands.)
+With prefix argument <var>n</var>, search for Nth previous match.
+If <var>n</var> is negative, find the next or Nth next match.
+</p></dd></dl>
+<dl>
+<dt><u>Command:</u> <b>pg-next-matching-input</b><i> regexp n</i>
+<a name="IDX49"></a>
+</dt>
+<dd><p>Search forwards through input history for match for <var>regexp</var>.<br>
+(Later history elements are more recent commands.)
+With prefix argument <var>n</var>, search for Nth following match.
+If <var>n</var> is negative, find the previous or Nth previous match.
+</p></dd></dl>
+<dl>
+<dt><u>Command:</u> <b>pg-previous-matching-input-from-input</b><i> n</i>
+<a name="IDX50"></a>
+</dt>
+<dd><p>Search backwards through input history for match for current input.<br>
+(Previous history elements are earlier commands.)
+With prefix argument <var>n</var>, search for Nth previous match.
+If <var>n</var> is negative, search forwards for the -Nth following match.
+</p></dd></dl>
+<dl>
+<dt><u>Command:</u> <b>pg-next-matching-input-from-input</b><i> n</i>
+<a name="IDX51"></a>
+</dt>
+<dd><p>Search forwards through input history for match for current input.<br>
+(Following history elements are more recent commands.)
+With prefix argument <var>n</var>, search for Nth following match.
+If <var>n</var> is negative, search backwards for the -Nth previous match.
+</p></dd></dl>
+<hr size="6">
+<a name="Experimental-features"></a>
+<a name="SEC36"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC35" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="#SEC27" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<h2 class="section"> 4.9 Experimental features </h2>
+
+<p>During the development of Proof General, we experiment with new features
+in the interface.  The particular features available the version of
+Proof General you have are described in the file &lsquo;<tt>README.exper</tt>&rsquo;
+which is included in the distribution.
+</p>
+<p>The experimental features are automatically enabled in development
+releases of Proof General, but disabled in the stable releases.  To
+adjust the setting, customize the variable below.  After changing the
+setting you should restart Proof General to see (or remove) the new
+features.
+</p>
+<dl>
+<dt><u>User Option:</u> <b>proof-experimental-features</b>
+<a name="IDX52"></a>
+</dt>
+<dd><p>Whether to enable certain features regarded as experimental.<br>
+Proof General includes a few features designated as &quot;experimental&quot;.
+Enabling these will usually have no detrimental effects on using PG,
+but the features themselves may be buggy.
+</p>
+<p>We encourage users to set this flag and test the features, but being
+aware that the features may be buggy (problem reports and
+suggestions for improvements are welcomed).
+</p>
+<p>The default value is <code>nil</code>.
+</p></dd></dl>
+
+
+
+<hr size="6">
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="#SEC27" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_6.html#SEC37" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="ProofGeneral.html#SEC_Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_18.html#SEC90" title="Index">Index</a>]</td>
+<td valign="middle" align="left">[<a href="ProofGeneral_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated by <em>David Aspinall</em> on <em>July, 24 2008</em> using <a href="http://www.nongnu.org/texi2html/"><em>texi2html 1.78</em></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>
