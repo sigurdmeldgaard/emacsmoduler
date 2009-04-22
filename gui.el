@@ -11,7 +11,7 @@
  '(flymake-errline ((t (:background "DarkRed"))))
  '(flymake-warnline ((((class color)) (:background "DarkBlue")))))
 
-(set-variable 'visible-bell t)
+(set-variable 'visible-bell nil)
 
 (require 'mic-paren)
 (paren-activate)
