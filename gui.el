@@ -13,5 +13,15 @@
 
 (set-variable 'visible-bell nil)
 
+(defvar fullscreen-p nil)
+(defun toggle-fullscreen()
+  (interactive)
+  (setq fullscreen-p (not fullscreen-p))
+  (if fullscreen-p
+      (set-frame-parameter nil 'fullscreen 'fullboth)
+    (set-frame-parameter nil 'fullscreen 'fullheight)))
+
+(global-set-key [f3] 'toggle-fullscreen)
+
 (require 'mic-paren)
 (paren-activate)
