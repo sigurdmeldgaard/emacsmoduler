@@ -117,6 +117,42 @@
      (list (line-beginning-position)
            (line-beginning-position 2)))))
 
+ (global-set-key [C-M-down] 'vjo-forward-current-word-keep-offset)
+ (global-set-key [C-M-up] 'vjo-backward-current-word-keep-offset)
+
+ (defun forward-current-word-keep-offset ()
+  (interactive)
+  (find-current-word 'forward))
+
+(defun backward-current-word-keep-offset ()
+  (interactive)
+  (find-current-word 'backward))
+  
+(defun find-current-word-keep-offset (direction)
+  (let ((re-curword) (curword) (offset (point)) 
+        (old-case-fold-search case-fold-search) )
+    (setq curword (thing-at-point 'symbol))
+    (setq re-curword (concat "\\<" (thing-at-point 'symbol) "\\>") )
+    (beginning-of-thing 'symbol)
+    (setq offset (- offset (point)))	; offset from start of symbol/word
+    (if (eq direction 'forward)
+        (setq offset (- (length curword) offset))) ; offset from end
+    (forward-char)
+    (setq case-fold-search nil)
+    (let ((search-direction (if (eq direction 'forward) (function re-search-forward)
+                              (function re-search-backward))))
+      (if (funcall search-direction re-curword nil t)
+          (forward-char offset)
+        ;; else
+        (progn (goto-char (point-max))
+               (if (funcalll search-direction re-curword nil t)
+                   (progn (message "Searching from bottom. %s" (what-line))
+                          (forward-char offset))
+                 ;; else
+                 (message "Searching from bottom: Not found"))
+               ))
+      (setq case-fold-search old-case-fold-search))))
+
 ;; (defadvice kill-buffer (around my-kill-buffer-check activate)
 ;;   "Prompt when a buffer is about to be killed."
 ;;   (let* ((buffer-file-name (buffer-file-name))
