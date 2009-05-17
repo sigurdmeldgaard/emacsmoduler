@@ -117,9 +117,6 @@
      (list (line-beginning-position)
            (line-beginning-position 2)))))
 
- (global-set-key [C-M-down] 'vjo-forward-current-word-keep-offset)
- (global-set-key [C-M-up] 'vjo-backward-current-word-keep-offset)
-
  (defun forward-current-word-keep-offset ()
   (interactive)
   (find-current-word 'forward))
