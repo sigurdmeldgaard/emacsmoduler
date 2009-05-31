@@ -4,6 +4,8 @@
   "redirects to y-or-n-p"
   (y-or-n-p prompt))
 
+(require 'browse-kill-ring)
+(browse-kill-ring-default-keybindings)
 (when (or (functionp 'cua-mode) (featurep 'cua))
   (cua-mode 1)
   (setq
