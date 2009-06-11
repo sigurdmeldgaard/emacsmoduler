@@ -1,8 +1,7 @@
-;;;
-;;----------------------------------------------------------------------
+;;;----------------------------------------------------------------------
 ;; grail-fn.el
 ;; Primary Author: Mike Mattie
-;; Copyright (C) 2008 Mike Mattie
+;; Copyright (C) 2008,2009 Mike Mattie
 ;; License: LPGL-v3
 ;;----------------------------------------------------------------------
 
@@ -11,8 +10,15 @@
 ;; bugs/complexity early in the boot process could be minimized.
 
 ;;----------------------------------------------------------------------
-;; utilities.
+;; basic utilities.
 ;;----------------------------------------------------------------------
+
+(defun quote-string-for-shell ( string )
+  "quote-string-for-shell STRING
+
+   quote the string with ' for the shell.
+  "
+  (concat "\'" string "\'"))
 
 (defun list-filter-nil ( list )
   "Filter nil symbols from a list"
@@ -42,36 +48,40 @@
             (push transform rvalue)))))
     (reverse rvalue)))
 
-;;----------------------------------------------------------------------
-;; styles
-;;----------------------------------------------------------------------
+(defun is-current-frame-gui ( &optional frame-arg )
+  "is-current-frame-x FRAME
 
-(defun load-style ( style-name )
-  (lexical-let*
-    ((load-name  (concat grail-local-styles style-name ".el"))
-     (style-file (file-if-readable load-name)))
+   Return t if FRAME or (selected-frame) is a GUI frame, nil
+   otherwise.
+  "
+  (let*
+    ((frame (or frame-arg (selected-frame)))
+     (frame-type (framep frame)))
 
-    (if style-file
-      (robust-load-elisp style-file)
-      (progn
-        (message "load-style (loader-fn.el): could not load style %s from: %s\n"
-          style-name
-          load-name)
-        nil)) ))
+;;    (message "frame type is %s" (princ frame-type))
 
-(defvar requested-styles-list
-  nil
-  "List of styles requested by the user.")
+    (when (and frame-type
+            (or
+              (equal 'x frame-type)
+              (equal 'w32 frame-type)
+              (equal 'ns frame-type)))
+      t) ))
 
-(defun load-requested-styles ()
-  (mapc 'load-style
-    requested-styles-list))
+(defun grail-print-fn-to-scratch ( fn-name description )
+  "grail-print-fn-to-scratch FN-NAME DESCRIPTION
 
-(defun use-styles ( &rest request-list )
-  (mapc
-    (lambda ( name )
-      (push name requested-styles-list))
-    request-list))
+   Print FN-NAME as a function call with DESCRIPTION instructions
+   in the scratch buffer. The user can evaluate the description
+   and easily un-comment the function and execute it.
+  "
+  (with-current-buffer "*scratch*"
+    (goto-char (point-max))
+    (insert (format "; (%s) ; un-comment and evaluate to %s\n" fn-name description))) )
+
+(defun grail-groups-loaded-p ()
+  "return t if grail-groups.el has been loaded"
+  (when grail-local-groups
+    t))
 
 ;;----------------------------------------------------------------------
 ;; filter-ls: a general purpose tools for filtering directory listings.
@@ -113,33 +123,161 @@
        (directory-files-and-attributes ,path ,path-type)) ))
 
 ;;----------------------------------------------------------------------
-;; elpa
+;; diagnostic support routines.
+;;----------------------------------------------------------------------
+
+;; find-library-name is not an auto-load so we need to force a load.
+(require 'find-func)
+
+(defmacro diagnostic-load-elisp ( &rest load-expr )
+  "robust-load-elisp LOAD-EXPR
+
+   evaluate LOAD-EXPR trapping any errors that occur. the value
+   of LOAD-EXPR is discarded, and nil for a succesful load, or
+   the trapped error is returned.
+   "
+  `(condition-case error-trap
+     (progn
+       ,@load-expr
+       nil)
+     (error error-trap)) )
+
+(defmacro robust-load-elisp ( &rest load-expr )
+  "robust-load-elisp LOAD-EXPR
+
+   evaluate LOAD-EXPR trapping any errors that occur. the value
+   of LOAD-EXPR is discarded, and t for successful, nil for
+   errors is returned.
+   "
+  `(condition-case nil
+     (progn
+       ,@load-expr
+       t)
+     (error nil)) )
+
+(defun grail-in-load-path-p (package)
+  "grail-in-load-path-p elisp-name
+
+   Return either the absolute path to the elisp-file if it is found
+   in load-path, or nil otherwise.
+  "
+  (condition-case nil
+    (find-library-name package)
+    (error nil)) )
+
+;;----------------------------------------------------------------------
+;; faces
+;;----------------------------------------------------------------------
+
+;; I previously used custom-theme-set-faces for setting faces, however
+;; it broke with emacs --daemon, so I have created a macro to go
+;; to use set-face-attribute.
+
+(defun grail-set-face ( face attribute value )
+  "grail-set-face FACE ATTRIBUTE VALUE
+
+   set FACE attribute ATTRIBUTE to value. Attribute is a plain
+   symbol 'foo' converted to a syntatic attribute ':foo' by this
+   function.
+  "
+  (set-face-attribute face nil
+    (read (concat ":" attribute)) value))
+
+(defun pointer-to-face-p ( symbol )
+  "pointer-to-face-p SYMBOL
+
+   determine if SYMBOL is a variable that points to
+   a face (t), or a face symbol (nil).
+  "
+  (condition-case nil
+    (progn
+      (eval symbol)
+      t)
+    (error
+      nil)))
+
+(defmacro grail-set-faces ( &rest list )
+  "grail-set-faces BODY
+
+   Set one or more faces with a list of attributes.
+  "
+  (let
+    ((set-face-calls nil))
+
+    (mapc
+      ;; traverse the list of faces
+      (lambda ( face )
+        ;; traverse the list of attributes for a face.
+        (mapc
+          (lambda (attr-pair)
+            ;; cons each attribute as a call to grail-set-face
+            ;; onto a list of calls.
+            (setq set-face-calls
+              (cons
+                `(grail-set-face
+                   ,(if (pointer-to-face-p (car face))
+                      (car face)
+                      `',(car face))
+                   ,(symbol-name (car attr-pair)) ,(cadr attr-pair))
+                set-face-calls)))
+          (cdr face)))
+      list)
+    (cons 'progn set-face-calls)))
+
+;;----------------------------------------------------------------------
+;; ELPA
+;;
+;; The preferred way to install software is with ELPA which is a
+;; sophisticated package management system.
+;;
+;; the grail install functions are overly simplistic in comparison.
 ;;----------------------------------------------------------------------
 
 (defconst elpa-url
   "http://tromey.com/elpa/")
 
 (defun load-elpa-when-installed ()
-  (when (and
-         (file-accessible-directory-p grail-dist-elpa)
-         (load-elisp-if-exists (concat grail-dist-elpa "package.el")))
-    (setq-default package-user-dir grail-dist-elpa)
-    (push grail-dist-elpa package-directory-list)
-    (package-initialize)))
+  "load-elpa-when-installed
+
+   If the ELPA package management system http://tromey.com/elpa/ is installed,
+   configure it for use, assuming a proper install by grail-install-elpa.
+
+   t is returned if succesful, otherwise nil is returned.
+  "
+  (interactive)
+  (if (load-elisp-if-exists (concat grail-dist-elisp "package.el"))
+    (progn
+      (unless (dir-path-if-accessible grail-dist-elpa)
+        (make-directory grail-dist-elpa t))
+
+      (setq-default package-user-dir (grail-sanitize-path grail-dist-elpa))
+      (push grail-dist-elpa package-directory-list)
+
+      (let
+        ((elpa-errors (diagnostic-load-elisp (package-initialize))))
+
+        (if elpa-errors
+          (progn
+            (grail-dup-error-to-scratch
+              (format "ELPA failed to initialize with error %s" (format-signal-trap elpa-errors)))
+            nil)
+          t) ))
+    nil))
 
 (defun grail-install-elpa ()
+  "install the ELPA package management system"
   (interactive)
-  (condition-case nil
-      (progn
-        (make-directory grail-dist-elpa t)
 
-        (with-temp-buffer
-          (url-insert-file-contents (concat elpa-url "package.el"))
-          (write-file (concat grail-dist-elpa "package.el")))
+  (catch 'abort
+    (unless (grail-groups-loaded-p)
+      (message "installing ELPA requires loading grail-groups.el for installation routines. Please consult README.grail and place grail-groups.el in USER_ELISP")
+      (throw 'abort))
 
-        (load-elpa-when-installed))
+    (let
+      ((elpa-install (grail-repair-by-installing 'package
+                       (grail-define-installer "package" "file" (concat elpa-url "package.el")))))
 
-    (error
-     (progn
-       (message "ELPA installation failed.\n")
-       nil)) ))
+      (unless elpa-install
+        (message "ELPA installation failed %s" elpa-install)))
+
+    (load-elpa-when-installed) ))
