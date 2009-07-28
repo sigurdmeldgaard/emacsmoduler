@@ -1,14 +1,15 @@
 (robust-load-elisp (load (concat grail-dist-elisp "color-theme")))
-(require 'my-color-theme)
+(robust-load-elisp (load (concat grail-local-elisp "my-color-theme")))
+
 (my-color-theme)
 
 (add-hook 'after-make-frame-functions
-           (lambda (frame)
-             (set-variable 'color-theme-is-global nil)
-             (select-frame frame)
-             (if window-system
-                 (my-color-theme)
-               (color-theme-tty-dark))))
+          (lambda (frame)
+            (set-variable 'color-theme-is-global nil)
+            (select-frame frame)
+            (if window-system
+                (my-color-theme)
+              (color-theme-tty-dark))))
 
 (setq x-select-enable-clipboard t)
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
