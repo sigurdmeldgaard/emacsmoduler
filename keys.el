@@ -88,8 +88,10 @@
 			       (increment-number-at-point (or (- (abs n))
 							      -1))))
 
- (global-set-key [C-M-down] 'forward-current-word-keep-offset)
- (global-set-key [C-M-up] 'backward-current-word-keep-offset)
+(global-set-key [C-M-down] 'forward-current-word-keep-offset)
+(global-set-key [C-M-up] 'backward-current-word-keep-offset)
+
+(global-set-key "\M-x" 'smex)
 
 ;(require 'key-chord)
 ;(key-chord-define-global "cv" 'reindent-then-newline-and-indent)
