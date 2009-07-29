@@ -10,7 +10,7 @@
 (load "ido")
 (ido-mode 1)
 (require 'smex)
-(eval-after-load "grail.el" '(smex-initialize))
+(eval-after-load 'grail '(progn (message "got smex") (smex-initialize)))
 
 (when (or (functionp 'cua-mode) (featurep 'cua))
   (cua-mode 1)

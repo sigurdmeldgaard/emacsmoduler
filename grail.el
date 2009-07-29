@@ -481,3 +481,5 @@
   (error
     (grail-dup-error-to-scratch
       (apply 'format "grail aborted ! %s" (cdr error-trap)))) )
+
+(provide 'grail)
