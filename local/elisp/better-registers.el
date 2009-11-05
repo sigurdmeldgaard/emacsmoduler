@@ -72,9 +72,10 @@
 
 ;; In modes which overwrite C-j C-xj should still be bound to the same.
 
-(defvar better-registers-version "0.57"
+(defvar better-registers-version "0.58"
   "The version of the package better-registers.
    Revision history:
+   from 0.57 to 0.58 Improved interactive argument handling of better-registers-save-registers. 
    from 0.57 to 0.57 Can now correctly save fontified strings, added convenient macro key (f1)
    from 0.55 to 0.56 No longer blocks enter in the minibuffer
    from 0.5 to 0.55 changed it to a minor mode
@@ -138,12 +139,18 @@
             '(lambda ()
                (better-registers-save-registers))))
 
-(defun better-registers-save-registers (&optional filename)
+(defun better-registers-save-registers (&optional filename queryp)
   "Print the contents of all registers to a file as loadable data.
    Cannot save window/frame configuration.
    But it works with keyboard macros, text, buffernames,
-   filenames and rectangles."
-  (interactive "FTo which file?")
+   filenames and rectangles.
+
+   If filename is non-nil and queryp is nil, use that, otherwise
+   use the default filename.  If queryp is non-nil (a prefix
+   argument is given), query interactively for the file-name."
+  (interactive "i\nP")
+  (when queryp
+    (setq filename (read-file-name nil better-registers-save-file)))
   (let ((fn (or filename better-registers-save-file))
          (print-level nil) ;Let us write anything
          (print-length nil)
