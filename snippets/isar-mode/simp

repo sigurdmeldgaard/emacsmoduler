@@ -1,0 +1,1 @@
+apply (simp add: $1)

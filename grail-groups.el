@@ -38,6 +38,8 @@
     "sml"
     "sage"
     "lisp"
+    "isabelle"
+    "ediff"
     )
   "List of group modules requested by the user.")
 

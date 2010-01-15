@@ -46,7 +46,7 @@
 
 ;; Note that this package is pretty harsh to your std shortcuts you
 ;; probably should edit them (or at least see them through this file
-;; to suit your needs. I eg. personally never used backwards searches,
+;; to suit your needs. I e.g. personally never used backwards searches,
 ;; so C-r was doomed in my hands. I use only enter for indented
 ;; linebreaks, so C-j also seemed as a nice candidate for something
 ;; more useful - you might want to bind:
@@ -72,9 +72,10 @@
 
 ;; In modes which overwrite C-j C-xj should still be bound to the same.
 
-(defvar better-registers-version "0.57"
+(defvar better-registers-version "0.58"
   "The version of the package better-registers.
    Revision history:
+   from 0.57 to 0.58 Improved interactive argument handling of better-registers-save-registers. 
    from 0.57 to 0.57 Can now correctly save fontified strings, added convenient macro key (f1)
    from 0.55 to 0.56 No longer blocks enter in the minibuffer
    from 0.5 to 0.55 changed it to a minor mode
@@ -96,8 +97,8 @@
 (defvar better-registers-r-map (make-sparse-keymap)
   "Keymap for combinations with C-r first")
 
-(define-key better-registers-map (kbd "<f1>") 'better-registers-play-macro-if-not-playing)
-(define-key better-registers-map (kbd "S-<f1>") 'better-registers-toggle-macro-recording)
+(define-key better-registers-map [f1] 'better-registers-play-macro-if-not-playing)
+(define-key better-registers-map [S-f1] 'better-registers-toggle-macro-recording)
 (define-key better-registers-map "\C-j" 'better-registers-jump-to-register)
 (define-key better-registers-map "\C-xj" 'better-registers-jump-to-register)
 (define-key better-registers-map "\C-xr" 'isearch-backward) ;free C-r
@@ -139,54 +140,53 @@
                (better-registers-save-registers))))
 
 (defun better-registers-save-registers (&optional filename queryp)
- "Print the contents of all registers to a file as loadable data.
-  Cannot save window/frame configuration.
-  But it works with keyboard macros, text, buffernames,
-  filenames and rectangles.
+  "Print the contents of all registers to a file as loadable data.
+   Cannot save window/frame configuration.
+   But it works with keyboard macros, text, buffernames,
+   filenames and rectangles.
 
-  If filename is non-nil and queryp is nil, use that, otherwise
-  use the default filename.  If queryp is non-nil (a prefix
-  argument is given), query interactively for the file-name."
- (interactive "i\nP")
- (when queryp
-   (setq filename (read-file-name "Save registers: "
-				  better-registers-save-file
-				  better-registers-save-file)))
- (let ((fn (or filename better-registers-save-file))
-        (print-level nil) ;Let us write anything
-        (print-length nil)
-       (b (generate-new-buffer "*registers*")))
-   (set-buffer b)
-   (dolist (i register-alist)
-     (let ((char (car i))
-           (contents (cdr i)))
-       (cond
-        ((stringp contents)
-         (insert (format "%S\n"
-                        `(set-register
-                          ,char
-                          ,contents))))
-        ((numberp contents) ;numbers are printed non-quotes
-         (insert (format "%S\n" `(set-register ,char ,contents))))
-        ((markerp contents)
-         (insert (format
-                  "%S\n"
-                  `(set-register
-                    ,char
-                    '(file-query
-                     ,(buffer-file-name (marker-buffer contents))
-                     ,(marker-position contents))))))
-        ((bufferp (cdr contents))
-         (insert (format "%s\n"
-                         `(set-register ,char
-                                        ',(buffer-name (cdr contents))))))
-        (t (when (and contents ; different from nil
-                      (not (or (window-configuration-p (car contents))
-                               (frame-configuration-p (car contents)))))
-             (insert (format "%S\n"
-                             `(set-register ,char (quote ,contents)))))))))
-   (write-file fn)
-   (kill-buffer b)))
+   If filename is non-nil and queryp is nil, use that, otherwise
+   use the default filename.  If queryp is non-nil (a prefix
+   argument is given), query interactively for the file-name."
+  (interactive "i\nP")
+  (when queryp
+    (setq filename (read-file-name nil better-registers-save-file)))
+  (let ((fn (or filename better-registers-save-file))
+         (print-level nil) ;Let us write anything
+         (print-length nil)
+        (b (generate-new-buffer "*registers*")))
+    (set-buffer b)
+    (dolist (i register-alist)
+      (let ((char (car i))
+            (contents (cdr i)))
+        (cond
+         ((stringp contents)
+          (insert (format "%S\n"
+                         `(set-register
+                           ,char
+                           ,contents))))
+         ((numberp contents) ;numbers are printed non-quotes
+          (insert (format "%S\n" `(set-register ,char ,contents))))
+         ((markerp contents)
+          (insert (format
+                   "%S\n"
+                   `(set-register
+                     ,char
+                     '(file-query
+                      ,(buffer-file-name (marker-buffer contents))
+                      ,(marker-position contents))))))
+         ((bufferp (cdr contents))
+          (insert (format "%s\n"
+                          `(set-register ,char
+                                         ',(buffer-name (cdr contents))))))
+         (t (when (and contents ; different from nil
+                       (not (or (window-configuration-p (car contents))
+                                (frame-configuration-p (car contents)))))
+              (insert (format "%S\n"
+                              `(set-register ,char (quote ,contents)))))))))
+    (write-file fn)
+    (kill-buffer b)))
+
 
 (defun better-registers-put-buffer-in-register (register &optional delete)
   "Put current buffername in register - this would also work for

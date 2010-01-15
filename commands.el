@@ -7,8 +7,10 @@
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
 
+<<<<<<< HEAD
 (load "ido")
 (ido-mode 1)
+
 (require 'smex)
 (eval-after-load 'grail '(progn (message "got smex") (smex-initialize)))
 
@@ -79,6 +81,9 @@
 (command-frequency-mode 1)
 (command-frequency-table-load)
 (command-frequency-autosave-mode 1)
+
+(load "ido")
+(ido-mode 1)
 
 (require 'vc-ediff)
 (require 'find-cmd)
@@ -189,3 +194,12 @@
 ;;                  (save-buffer)
 ;;                  ad-do-it)))
 ;;       ad-do-it)))
+
+(add-hook 'server-switch-hook 
+            (lambda ()
+              (when (current-local-map)
+                (use-local-map (copy-keymap (current-local-map))))
+              (local-set-key (kbd "C-c C-c") '(lambda ()
+                                                (interactive)
+                                                (save-buffer)
+                                                (server-edit)))))
