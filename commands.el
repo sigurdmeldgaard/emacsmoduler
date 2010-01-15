@@ -7,7 +7,6 @@
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
 
-<<<<<<< HEAD
 (load "ido")
 (ido-mode 1)
 
