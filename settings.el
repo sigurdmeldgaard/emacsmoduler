@@ -100,9 +100,18 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pyflakes-init)))
 
-
+  (add-hook 'server-switch-hook 
+            (lambda ()
+              (when (current-local-map)
+                (use-local-map (copy-keymap (current-local-map))))
+              (local-set-key (kbd "C-c C-c") 'server-edit)))
 ;(custom-set-faces
 ; '(flymake-errline ((((class color)) (:background "DarkRed"))))
 ; '(flymake-warnline ((((class color)) (:background "DarkBlue")))))
 
 ;(add-hook 'find-file-hook 'flymake-find-file-hook)
+
+(add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
+                                  (nnimap-address "imap.gmail.com")
+                                  (nnimap-server-port 993)
+                                  (nnimap-stream ssl)))
