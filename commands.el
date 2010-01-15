@@ -160,12 +160,6 @@
                  (message "Searching from bottom: Not found"))
                )))))
 
-(load-file (concat grail-dist-elisp "/cedet-1.0pre6/common/cedet.el"))
-(global-ede-mode 1)                      ; Enable the Project management system
-(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
-(global-srecode-minor-mode 1)            ; Enable template insertion menu
-
-
 ;; (defadvice kill-buffer (around my-kill-buffer-check activate)
 ;;   "Prompt when a buffer is about to be killed."
 ;;   (let* ((buffer-file-name (buffer-file-name))
@@ -196,3 +190,12 @@
 ;;                  (save-buffer)
 ;;                  ad-do-it)))
 ;;       ad-do-it)))
+
+(add-hook 'server-switch-hook 
+            (lambda ()
+              (when (current-local-map)
+                (use-local-map (copy-keymap (current-local-map))))
+              (local-set-key (kbd "C-c C-c") '(lambda ()
+                                                (interactive)
+                                                (save-buffer)
+                                                (server-edit)))))
