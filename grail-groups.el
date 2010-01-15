@@ -36,6 +36,8 @@
     "c"
     "sml"
     "sage"
+    "isabelle"
+    "ediff"
     )
   "List of group modules requested by the user.")
 
