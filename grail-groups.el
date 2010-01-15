@@ -28,6 +28,7 @@
     "micropython"
     "org"
     "python"
+    "sage"
     "xml"
     "snippets"
     "html"
@@ -36,6 +37,7 @@
     "c"
     "sml"
     "sage"
+    "lisp"
     )
   "List of group modules requested by the user.")
 
