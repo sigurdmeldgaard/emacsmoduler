@@ -1,0 +1,1 @@
+apply (induct ${1:xs})

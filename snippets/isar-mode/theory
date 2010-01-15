@@ -1,0 +1,5 @@
+theory $1
+imports ${2:Main}
+begin
+$0
+end
