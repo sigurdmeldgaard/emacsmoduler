@@ -3,17 +3,25 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(agda2-fontset-name nil)
- '(double-map (quote ((59 ";" "æ") (39 "ø" "'") (91 "[" "å") (58 ":" "Æ") (34 "\"" "Ø") (123 "{" "Å"))))
- '(isa-isatool-command "/usr/local/Isabelle/bin/isabelle")
- '(isar-maths-menu-enable t)
- '(isar-unicode-tokens-enable t)
- '(isar-x-symbol-enable nil)
- '(tex-start-commands "--shell-escape \"\\nonstopmode\\input\""))
+'(browse-url-browser-function (quote browse-url-generic))
+ '(dired-recursive-copies (quote always))
+ '(dired-recursive-deletes (quote top))
+ '(global-hl-line-mode nil nil (hl-line))
+ '(haskell-program-name "ghci \"+.\"")
+ '(haskell-refac-chasePaths (quote ("/home/sigurd/haskellleg" "/home/sigurd/haskellleg/HaRe_20012006/tools/base/tests/HaskellLibraries" "/usr/lib/ghc-6.4.1")))
+ '(indent-tabs-mode nil)
+ '(ispell-program-name "aspell")
+ '(nxml-slash-auto-complete-flag t)
+ '(org-agenda-files (quote ("~/izmir/todo.org")))
+ '(safe-local-variable-values (quote ((TeX-master . rapport) (TeX-master . "rapport"))))
+ '(scheme-program-name "mzscheme")
+ '(smiley-regexp-alist nil)
+ '(speedbar-directory-unshown-regexp "^\\(CVS\\|RCS\\|SCCS\\|_DARCS\\|\\..*\\)\\'")
+ '(speedbar-use-images nil)
+ '(spell-command "aspell"))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(flymake-errline ((((class color)) (:background "DarkRed"))))
- '(flymake-warnline ((((class color)) (:background "DarkBlue")))))
+ )

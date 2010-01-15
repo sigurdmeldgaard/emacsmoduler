@@ -7,10 +7,8 @@
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
 
-(load "ido")
-(ido-mode 1)
-(require 'smex)
-(eval-after-load "grail.el" '(smex-initialize))
+;(require 'smex)
+;(eval-after-load "grail.el" '(smex-initialize))
 
 (when (or (functionp 'cua-mode) (featurep 'cua))
   (cua-mode 1)
@@ -79,6 +77,9 @@
 (command-frequency-mode 1)
 (command-frequency-table-load)
 (command-frequency-autosave-mode 1)
+
+(load "ido")
+(ido-mode 1)
 
 (require 'vc-ediff)
 (require 'find-cmd)
@@ -158,6 +159,12 @@
                  ;; else
                  (message "Searching from bottom: Not found"))
                )))))
+
+(load-file (concat grail-dist-elisp "/cedet-1.0pre6/common/cedet.el"))
+(global-ede-mode 1)                      ; Enable the Project management system
+(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
+(global-srecode-minor-mode 1)            ; Enable template insertion menu
+
 
 ;; (defadvice kill-buffer (around my-kill-buffer-check activate)
 ;;   "Prompt when a buffer is about to be killed."
