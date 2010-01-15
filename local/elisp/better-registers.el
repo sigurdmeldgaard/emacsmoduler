@@ -96,8 +96,8 @@
 (defvar better-registers-r-map (make-sparse-keymap)
   "Keymap for combinations with C-r first")
 
-(define-key better-registers-map [f1] 'better-registers-play-macro-if-not-playing)
-(define-key better-registers-map [S-f1] 'better-registers-toggle-macro-recording)
+(define-key better-registers-map (kbd "<f1>") 'better-registers-play-macro-if-not-playing)
+(define-key better-registers-map (kbd "S-<f1>") 'better-registers-toggle-macro-recording)
 (define-key better-registers-map "\C-j" 'better-registers-jump-to-register)
 (define-key better-registers-map "\C-xj" 'better-registers-jump-to-register)
 (define-key better-registers-map "\C-xr" 'isearch-backward) ;free C-r
@@ -138,48 +138,55 @@
             '(lambda ()
                (better-registers-save-registers))))
 
-(defun better-registers-save-registers (&optional filename)
-  "Print the contents of all registers to a file as loadable data.
-   Cannot save window/frame configuration.
-   But it works with keyboard macros, text, buffernames,
-   filenames and rectangles."
-  (interactive "FTo which file?")
-  (let ((fn (or filename better-registers-save-file))
-         (print-level nil) ;Let us write anything
-         (print-length nil)
-        (b (generate-new-buffer "*registers*")))
-    (set-buffer b)
-    (dolist (i register-alist)
-      (let ((char (car i))
-            (contents (cdr i)))
-        (cond
-         ((stringp contents)
-          (insert (format "%S\n"
-                         `(set-register
-                           ,char
-                           ,contents))))
-         ((numberp contents) ;numbers are printed non-quotes
-          (insert (format "%S\n" `(set-register ,char ,contents))))
-         ((markerp contents)
-          (insert (format
-                   "%S\n"
-                   `(set-register
-                     ,char
-                     '(file-query
-                      ,(buffer-file-name (marker-buffer contents))
-                      ,(marker-position contents))))))
-         ((bufferp (cdr contents))
-          (insert (format "%s\n"
-                          `(set-register ,char
-                                         ',(buffer-name (cdr contents))))))
-         (t (when (and contents ; different from nil
-                       (not (or (window-configuration-p (car contents))
-                                (frame-configuration-p (car contents)))))
-              (insert (format "%S\n"
-                              `(set-register ,char (quote ,contents)))))))))
-    (write-file fn)
-    (kill-buffer b)))
+(defun better-registers-save-registers (&optional filename queryp)
+ "Print the contents of all registers to a file as loadable data.
+  Cannot save window/frame configuration.
+  But it works with keyboard macros, text, buffernames,
+  filenames and rectangles.
 
+  If filename is non-nil and queryp is nil, use that, otherwise
+  use the default filename.  If queryp is non-nil (a prefix
+  argument is given), query interactively for the file-name."
+ (interactive "i\nP")
+ (when queryp
+   (setq filename (read-file-name "Save registers: "
+				  better-registers-save-file
+				  better-registers-save-file)))
+ (let ((fn (or filename better-registers-save-file))
+        (print-level nil) ;Let us write anything
+        (print-length nil)
+       (b (generate-new-buffer "*registers*")))
+   (set-buffer b)
+   (dolist (i register-alist)
+     (let ((char (car i))
+           (contents (cdr i)))
+       (cond
+        ((stringp contents)
+         (insert (format "%S\n"
+                        `(set-register
+                          ,char
+                          ,contents))))
+        ((numberp contents) ;numbers are printed non-quotes
+         (insert (format "%S\n" `(set-register ,char ,contents))))
+        ((markerp contents)
+         (insert (format
+                  "%S\n"
+                  `(set-register
+                    ,char
+                    '(file-query
+                     ,(buffer-file-name (marker-buffer contents))
+                     ,(marker-position contents))))))
+        ((bufferp (cdr contents))
+         (insert (format "%s\n"
+                         `(set-register ,char
+                                        ',(buffer-name (cdr contents))))))
+        (t (when (and contents ; different from nil
+                      (not (or (window-configuration-p (car contents))
+                               (frame-configuration-p (car contents)))))
+             (insert (format "%S\n"
+                             `(set-register ,char (quote ,contents)))))))))
+   (write-file fn)
+   (kill-buffer b)))
 
 (defun better-registers-put-buffer-in-register (register &optional delete)
   "Put current buffername in register - this would also work for
