@@ -14,6 +14,7 @@
 (setq TeX-PDF-mode t)
 (add-to-list 'safe-local-variable-values '((TeX-master . rapport) (TeX-master . "rapport")))
 
+
 ;; Flymake for LaTeX
 (eval-after-load 'flymake
   '(progn
@@ -27,6 +28,7 @@
      ))
 
 (eval-after-load 'latex '(progn
+                           (add-to-list 'tex-compile-commands '("kpdf %r.pdf &" "%r.pdf"))
 			   (add-hook 'LaTeX-mode-hook
 				     (lambda () (speck-mode 1)))
 			   (add-hook 'LaTeX-mode-hook

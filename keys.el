@@ -26,7 +26,9 @@
 (global-set-key "\C-c\C-k" 'compile)
 (global-set-key [f11] 'hippie-expand)
 (global-set-key [f6] 'hippie-expand)
-(global-set-key "\r" 'newline-and-indent)
+;(global-set-key (kbd "<return>") 'newline-and-indent)
+
+
 (global-set-key [C-tab] 'goto-matching-paren)
 (global-set-key [S-return] 'open-my-way)
 (global-set-key "\C-o" 'find-file-at-point)
@@ -63,6 +65,7 @@
 ;(global-set-key (kbd "C-c M-x") 'smex-update-and-run)
 ;; This is your old M-x.
 ;(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+(global-set-key (kbd "M-.") 'ido-find-tag)
 
 (global-set-key "\M-\C-g" 'rgrep)
 
@@ -94,3 +97,5 @@
 ;(require 'key-chord)
 ;(key-chord-define-global "cv" 'reindent-then-newline-and-indent)
 ;(key-chord-define-global "]\" 'reindent-then-newline-and-indent)
+
+(require 'agda-input)

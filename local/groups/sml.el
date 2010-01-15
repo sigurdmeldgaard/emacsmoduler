@@ -1,7 +1,7 @@
 (autoload 'sml-mode "sml-mode" "Major mode for editing SML." t)
 (autoload 'run-sml "sml-proc" "Run an inferior SML process." t)
 
-(add-to-list (quote auto-mode-alist) (quote ("\\.s\\(ml\\|ig\\)\\'" . sml-mode)))
+(add-to-list (quote auto-mode-alist) (quote ("\\.s?\\(ml\\|ig\\)\\'" . sml-mode)))
 
 (defun sml-inside-comment ()
   (eq (get-text-property (point) 'face)

@@ -1,15 +1,16 @@
-;(load "pymacs")
-;(load "python")
+(load "pymacs")
+(load "python")
 
 ;;(eval-after-load "pymacs"
 ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
-;(defun load-ropemacs ()
-;    "Load pymacs and ropemacs"
-;    (interactive)
-;    (require 'pymacs)
-;    (pymacs-load "ropemacs" "rope-")
-;    ;; Automatically save project python buffers before refactorings
-;    (setq ropemacs-confirm-saving 'nil))
+
+(defun load-ropemacs ()
+    "Load pymacs and ropemacs"
+    (interactive)
+    (require 'pymacs)
+    (pymacs-load "ropemacs" "rope-")
+    ;; Automatically save project python buffers before refactorings
+    (setq ropemacs-confirm-saving 'nil))
 
 ;(add-hook 'python-mode-hook 'load-ropemacs)
 ;(autoload 'pysmell-mode "pysmell" "Code completion for python" t)

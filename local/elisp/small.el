@@ -232,3 +232,24 @@ editing control characters:
         (set-buffer-modified-p nil)
         t))))
 
+
+(defun dos-to-unix-eol (fpath)
+  (interactive)
+  (while (re-search-forward "\r\n" nil t)
+    (replace-match "\n" nil nil)))
+
+
+(defun dos-to-unix-eol (fpath)
+  "Change file's line ending to unix convention."
+    (let ((coding-system-for-read 'dos)
+	  (coding-system-for-write 'unix))
+      (let ((mybuffer (find-file fpath)))
+        (save-buffer)
+        (kill-buffer mybuffer))))
+
+(defun dired-dos2unix-marked-files ()
+  "Change to unix line ending for marked (or next arg) files."
+  (interactive)
+  (mapc 'dos-to-unix-eol (dired-get-marked-files)))
+
+
