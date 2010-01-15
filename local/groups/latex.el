@@ -1,3 +1,5 @@
+(add-to-list 'load-path "~/.emacs.d")
+(require 'tex-site)
 (setq org-export-with-LaTeX-fragments t)
 
 (setq org-format-latex-header "\\documentclass{article}
