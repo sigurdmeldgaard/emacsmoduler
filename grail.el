@@ -58,6 +58,11 @@
 ;; detailed description of the file and directory structure that is
 ;; significant to Grail.
 
+(setq byte-compile-verbose nil)
+(setq byte-compile-warnings nil)
+(require 'byte-code-cache)
+
+
 (defconst grail-release-version "0.1.3"
   "the release number of grail.el")
 
@@ -481,5 +486,8 @@
   (error
     (grail-dup-error-to-scratch
       (apply 'format "grail aborted ! %s" (cdr error-trap)))) )
+
+(setq byte-compile-verbose t)
+(setq byte-compile-warnings t)
 
 (provide 'grail)
