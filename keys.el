@@ -98,4 +98,8 @@
 ;(key-chord-define-global "cv" 'reindent-then-newline-and-indent)
 ;(key-chord-define-global "]\" 'reindent-then-newline-and-indent)
 
+(global-set-key (kbd "s-q") 'fill-paragraph)
+
+(global-set-key  (kbd "<kp-delete>") 'delete-char)
+
 (require 'agda-input)
