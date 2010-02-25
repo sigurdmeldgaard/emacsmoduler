@@ -102,4 +102,6 @@
 
 (global-set-key  (kbd "<kp-delete>") 'delete-char)
 
+(global-set-key  (kbd "s-w") 'kill-ring-save)
+
 (require 'agda-input)
