@@ -30,6 +30,7 @@
      ))
 
 (eval-after-load 'latex '(progn
+                           (defvar tex-compile-commands 'nil)
                            (add-to-list 'tex-compile-commands '("kpdf %r.pdf &" "%r.pdf"))
 			   (add-hook 'LaTeX-mode-hook
 				     (lambda () (speck-mode 1)))
