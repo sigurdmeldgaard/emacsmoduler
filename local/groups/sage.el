@@ -1,6 +1,7 @@
-;;(add-to-list 'load-path (expand-file-name "/Applications/sage/data/emacs"))
-;;(require 'sage "sage")
-;;(setq sage-command "/Applications/sage/sage")
+(add-to-list 'load-path (expand-file-name "~/sage/data/emacs"))
+(require 'sage-mode)
+(setq sage-command "sage")
+
 ;; 
 ;;;; If you want sage-view to typeset all your output and have plot()
 ;;;; commands inline, uncomment the following line and configure sage-view:
