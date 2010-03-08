@@ -3,6 +3,10 @@
 
 (my-color-theme)
 
+(custom-set-faces
+ '(diff-added ((t (:foreground "Green"))) 'now)
+ '(diff-removed ((t (:foreground "Red"))) 'now))
+
 (add-hook 'after-make-frame-functions
           (lambda (frame)
             (set-variable 'color-theme-is-global nil)
