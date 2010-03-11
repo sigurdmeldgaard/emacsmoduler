@@ -10,7 +10,6 @@
   (require 'browse-kill-ring)
   (browse-kill-ring-default-keybindings))
 
-(load "ido")
 (ido-mode 1)
 
 (require 'smex)
