@@ -104,6 +104,7 @@
 (define-key better-registers-map "\C-xr" 'isearch-backward) ;free C-r
 (define-key better-registers-map "\C-r" ;Shadow C-r global
   better-registers-r-map)
+(define-key better-registers-r-map "l" 'better-registers-list-registers)
 (define-key better-registers-r-map "n" 'number-to-register)
 (define-key better-registers-r-map "+" 'increment-register)
 (define-key better-registers-r-map "-" 'better-registers-decrement-register)
@@ -138,6 +139,104 @@
   (add-hook 'kill-emacs-hook
             '(lambda ()
                (better-registers-save-registers))))
+
+(defvar better-registers-register-list-mode-hook nil)
+(defvar better-registers-register-list-mode-map
+
+(define-derived-mode better-registers-register-list-mode
+  fundamental-mode
+  "Registers"
+  "A major mode for brosing the registers
+\\{better-registers-register-list-mode-map}"
+  (define-key better-registers-register-list-mode-map (kbd "q") 
+    'bury-buffer)
+  (define-key better-registers-register-list-mode-map (kbd "d")
+    'better-registers-register-list-delete)
+  (define-key better-registers-register-list-mode-map (kbd "n")
+    'next-line)
+  (define-key better-registers-register-list-mode-map (kbd "p")
+    'previous-line)
+  (define-key better-registers-register-list-mode-map [(mouse-2)]
+    'better-registers-register-list-mouse-insert) ;TODO
+  (define-key better-registers-register-list-mode-map (kbd "?")
+    'describe-mode)
+  (define-key better-registers-register-list-mode-map (kbd "h")
+    'describe-mode)
+  (define-key better-registers-register-list-mode-map (kbd "RET")
+    'better-registers-register-list-insert-and-quit))
+
+(defun better-registers-register-list-insert-and-quit ()
+  (interactive "")
+  (let ((char (better-registers-register-list-register-at-point)))
+    (bury-buffer)
+    (better-registers-jump-to-register char)))
+
+(defun better-registers-delete-assoc (key alist)
+  (assq-delete-all key (copy-alist alist)))
+
+(defun better-registers-register-list-delete ()
+  (interactive "")
+  (let ((char (better-registers-register-list-register-at-point)))
+  (setq register-alist (better-registers-delete-assoc 
+                        char
+                        register-alist))
+  (better-registers-list-registers)
+  (message (format "Deleted register \'%c\'" char))))
+
+(defun better-registers-register-list-register-at-point ()
+  (save-excursion
+    (beginning-of-line)
+    (char-after)))
+
+(defun better-registers-describe-register (contents)
+  "Give a (type . desc) pair with a textual description of the
+type of the contents of a register, and the contents itself"
+  (let (type descr)
+    (cond
+     ((stringp contents)
+      (setq type "STRING" desc
+            (replace-regexp-in-string "\n" "↩" contents)))
+     ((numberp contents) ;numbers are printed non-quotes
+      (setq type "UNKNOWN" desc contents))
+     ((markerp contents)
+      (setq type "MARKER:"
+            desc (format "%.40s %S" (buffer-file-name (marker-buffer contents))
+                         (marker-position contents))))
+     ((eq (car contents) 'file) ; By here we are sure to have a list
+      (setq type "FILE:" desc (format "%.40S" (cdr contents))))
+     ((eq (car contents) 'macro) ; By here we are sure to have a list
+      (setq type "MACRO:" desc (format "%.40S" (cdr contents))))
+     ((eq (car contents) 'file-query)
+      (insert (format "%s FILE-QUERY: %s %S\n" char (cdr contents) (cddr contents))))
+     ((bufferp (cdr contents))
+      (setq type "BUFFER" desc (buffer-name (cdr contents))))
+     ((window-configuration-p (car contents))
+      (setq type "WINDOW CONFIGURATION" desc ""))
+     ((frame-configuration-p (car contents))
+      (setq type "FRAME CONFIGURATION" desc ""))
+     ((null contents)
+      (setq type "EMPTY (strange)" desc ""))
+     (t (setq type "UNKNOWN:" desc contents)))
+    (cons type desc)))
+
+(defun better-registers-list-registers ()
+  "Print the contents of all registers to a buffer together with the bound key."
+  (interactive "")
+  (let ((print-level nil) ;Let us write anything
+        (print-length nil)
+        (b (get-buffer-create "*list-registers*")))
+    (set-buffer b)
+    (erase-buffer)
+    (dolist (i register-alist)
+      (let* ((char (car i))
+             (char (if (equal char ?\n) "<Enter>"
+                     (string char)))
+             (p (better-registers-describe-register (cdr i))))
+        (insert (format "%s %s %s\n"
+                        char (car p) (cdr p)))))
+    (goto-char (point-min))
+    (better-registers-register-list-mode)
+    (pop-to-buffer b)))
 
 (defun better-registers-save-registers (&optional filename queryp)
   "Print the contents of all registers to a file as loadable data.
