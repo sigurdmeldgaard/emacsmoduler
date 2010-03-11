@@ -141,7 +141,6 @@
                (better-registers-save-registers))))
 
 (defvar better-registers-register-list-mode-hook nil)
-(defvar better-registers-register-list-mode-map
 
 (define-derived-mode better-registers-register-list-mode
   fundamental-mode
@@ -149,7 +148,7 @@
   "A major mode for brosing the registers
 \\{better-registers-register-list-mode-map}"
   (define-key better-registers-register-list-mode-map (kbd "q") 
-    'bury-buffer)
+    'better-registers-list-registers-quit)
   (define-key better-registers-register-list-mode-map (kbd "d")
     'better-registers-register-list-delete)
   (define-key better-registers-register-list-mode-map (kbd "n")
@@ -168,7 +167,7 @@
 (defun better-registers-register-list-insert-and-quit ()
   (interactive "")
   (let ((char (better-registers-register-list-register-at-point)))
-    (bury-buffer)
+    (better-registers-list-registers-quit)
     (better-registers-jump-to-register char)))
 
 (defun better-registers-delete-assoc (key alist)
@@ -186,7 +185,9 @@
 (defun better-registers-register-list-register-at-point ()
   (save-excursion
     (beginning-of-line)
-    (char-after)))
+    (if (looking-at "<Enter>")
+        10
+      (char-after))))
 
 (defun better-registers-describe-register (contents)
   "Give a (type . desc) pair with a textual description of the
@@ -224,7 +225,8 @@ type of the contents of a register, and the contents itself"
   (interactive "")
   (let ((print-level nil) ;Let us write anything
         (print-length nil)
-        (b (get-buffer-create "*list-registers*")))
+        (b (get-buffer-create "*list-registers*"))
+        (window-conf (current-window-configuration)))
     (set-buffer b)
     (erase-buffer)
     (dolist (i register-alist)
@@ -236,7 +238,13 @@ type of the contents of a register, and the contents itself"
                         char (car p) (cdr p)))))
     (goto-char (point-min))
     (better-registers-register-list-mode)
-    (pop-to-buffer b)))
+    (pop-to-buffer b)
+    (make-local-variable 'better-registers-original-window-conf)
+    (setq better-registers-original-window-conf window-conf)))
+
+(defun better-registers-list-registers-quit ()
+  (interactive)
+  (set-window-configuration better-registers-original-window-conf))
 
 (defun better-registers-save-registers (&optional filename queryp)
   "Print the contents of all registers to a file as loadable data.
