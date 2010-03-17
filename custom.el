@@ -27,11 +27,14 @@
  '(smiley-regexp-alist nil)
  '(speedbar-directory-unshown-regexp "^\\(CVS\\|RCS\\|SCCS\\|_DARCS\\|\\..*\\)\\'" t)
  '(speedbar-use-images nil t)
- '(spell-command "aspell"))
+ '(spell-command "aspell")
+ '(user-mail-address "stm@cs.au.dk"))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(diff-added ((t (:foreground "Green"))))
+ '(diff-removed ((t (:foreground "Red"))))
  '(flymake-errline ((((class color)) (:background "DarkRed"))))
  '(flymake-warnline ((((class color)) (:background "DarkBlue")))))
