@@ -16,6 +16,7 @@
 (setq TeX-PDF-mode t)
 (add-to-list 'safe-local-variable-values '((TeX-master . rapport) (TeX-master . "rapport")))
 
+(define-globalized-minor-mode always-double-mode double-mode double-mode)
 
 ;; Flymake for LaTeX
 (eval-after-load 'flymake
@@ -34,5 +35,7 @@
                            (add-to-list 'tex-compile-commands '("kpdf %r.pdf &" "%r.pdf"))
 			   (add-hook 'LaTeX-mode-hook
 				     (lambda () (speck-mode 1)))
+			   (add-hook 'LaTeX-mode-hook
+				     (lambda () (reftex-mode 1)))
 			   (add-hook 'LaTeX-mode-hook
 				     '(lambda () (highlight-fixmes-mode 1)))))
