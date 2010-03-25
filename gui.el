@@ -1,11 +1,13 @@
 (robust-load-elisp (load (concat grail-dist-elisp "color-theme")))
 (robust-load-elisp (load (concat grail-local-elisp "my-color-theme")))
-
-(my-color-theme)
+(color-theme-initialize)
 
 (custom-set-faces
  '(diff-added ((t (:foreground "Green"))) 'now)
  '(diff-removed ((t (:foreground "Red"))) 'now))
+
+(fset 'original-color-theme (color-theme-make-snapshot))
+(my-color-theme)
 
 (add-hook 'after-make-frame-functions
           (lambda (frame)
@@ -23,6 +25,7 @@
  '(flymake-errline ((((class color)) (:background "DarkRed"))))
  '(flymake-errline ((t (:background "DarkRed"))))
  '(flymake-warnline ((((class color)) (:background "DarkBlue")))))
+
 
 (set-variable 'visible-bell nil)
 
