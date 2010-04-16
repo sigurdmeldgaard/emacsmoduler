@@ -50,8 +50,7 @@
 ;; ;; In LaTeX-mode we want this
 ;; (add-hook 'LaTeX-mode-hook
 ;;           (function (lambda ()
-;;                       (paren-toggle-matching-quoted-paren 1)
-;;                       (paren-toggle-matching-paired-delimiter 1))))
+;;                       )))
 ;;
 ;; Or - if you are programming in C like languages - try also:
 ;; (add-hook 'c-mode-common-hook
