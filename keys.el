@@ -60,11 +60,12 @@
 
 (global-set-key [(f5)] 'quick-compile)
 
-;(global-set-key (kbd "M-x") 'smex)
-;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;(global-set-key (kbd "C-c M-x") 'smex-update-and-run)
-;; This is your old M-x.
-;(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(global-set-key (kbd "C-c M-x") 'smex-update-and-run)
+; This is your old M-x.
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
 (global-set-key (kbd "M-.") 'ido-find-tag)
 
 (global-set-key "\M-\C-g" 'rgrep)
@@ -97,11 +98,5 @@
 ;(require 'key-chord)
 ;(key-chord-define-global "cv" 'reindent-then-newline-and-indent)
 ;(key-chord-define-global "]\" 'reindent-then-newline-and-indent)
-
-(global-set-key (kbd "s-q") 'fill-paragraph)
-
-(global-set-key  (kbd "<kp-delete>") 'delete-char)
-
-(global-set-key  (kbd "s-w") 'kill-ring-save)
 
 (require 'agda-input)
