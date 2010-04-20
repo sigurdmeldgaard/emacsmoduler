@@ -104,4 +104,16 @@
 
 (global-set-key  (kbd "s-w") 'kill-ring-save)
 
+(defun char-on-key (key char)
+  (global-set-key key 
+                  (lexical-let ((ch char)) 
+                    (lambda () (interactive) (insert-char ch 1)))))
+
+(char-on-key (kbd "M-[") ?å)
+(char-on-key (kbd "M-{") ?Å)
+(char-on-key (kbd "M-'") ?ø)
+(char-on-key (kbd "M-\"") ?Ø)
+(char-on-key (kbd "M-;") ?æ)
+(char-on-key (kbd "M-:") ?Æ)
+
 (require 'agda-input)
