@@ -1,5 +1,5 @@
 
-(robust-load-elisp (load (concat grail-dist-elisp "nxml/autostart.el")))
+(robust-load-elisp (load (concat grail-dist-elisp "nxml/autostart")))
 (autoload 'php-mode "php-mode" nil t)
 
 (setq nxml-slash-auto-complete-flag t)
