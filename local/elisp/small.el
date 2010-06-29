@@ -253,6 +253,3 @@ editing control characters:
   (mapc 'dos-to-unix-eol (dired-get-marked-files)))
 
 
-(paren-toggle-matching-quoted-paren 1)
-(paren-toggle-matching-paired-delimiter 1)
-
