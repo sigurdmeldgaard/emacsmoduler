@@ -1,4 +1,4 @@
-
+(require 'nxml-enc)
 (robust-load-elisp (load (concat grail-dist-elisp "nxml/autostart")))
 (autoload 'php-mode "php-mode" nil t)
 
