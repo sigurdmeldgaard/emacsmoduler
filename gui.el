@@ -23,7 +23,7 @@
 (set-variable 'visible-bell t)
 
 (add-hook 'calendar-mode-hook
-          (lambda () (buffer-face-mode-invoke 'fixed nil)))
+          (lambda () (require 'face-remap) (buffer-face-mode-invoke 'fixed nil)))
 
 (defvar fullscreen-p nil)
 (defun toggle-fullscreen()
