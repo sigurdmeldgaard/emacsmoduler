@@ -67,10 +67,6 @@
 ;;Firefox as standard browser
 (setq browse-url-generic-program "firefox")
 
-(defun yes-or-no-p (prompt)
-  "redirects to y-or-n-p"
-  (y-or-n-p prompt))
-
 (when (featurep 'x)
   (setq x-select-enable-clipboard t)
   (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
