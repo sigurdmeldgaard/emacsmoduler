@@ -49,7 +49,7 @@
 (add-hook 'diary-hook 'appt-make-list)
 (set-variable 'timeclock-modeline-display t)
 
-(scroll-bar-mode -1)
+(scroll-bar-mode 1)
 (tool-bar-mode -1)
 (setq inhibit-startup-message 1)
 (abbrev-mode 1)
