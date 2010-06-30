@@ -9,7 +9,7 @@
 
 (eval-after-load 'latex '(add-to-list 'LaTeX-mode-hook (lambda () (flyspell-mode 1))))
 
-(scroll-bar-mode -1)
+(scroll-bar-mode 1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (setq inhibit-startup-message 1)
