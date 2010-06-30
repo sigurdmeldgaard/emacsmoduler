@@ -100,11 +100,12 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-python-init)))
 
-  (add-hook 'server-switch-hook 
-            (lambda ()
-              (when (current-local-map)
-                (use-local-map (copy-keymap (current-local-map))))
-              (local-set-key (kbd "C-c C-c") 'server-edit)))
+(add-hook 'server-switch-hook 
+          (lambda ()
+            (when (current-local-map)
+              (use-local-map (copy-keymap (current-local-map))))
+            (local-set-key (kbd "C-c C-c") 'server-edit)))
+
 ;(custom-set-faces
 ; '(flymake-errline ((((class color)) (:background "DarkRed"))))
 ; '(flymake-warnline ((((class color)) (:background "DarkBlue")))))
