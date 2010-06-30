@@ -4,9 +4,6 @@
    (set-language-environment 'utf-8)
    (server-start))
 
-(setq org-log-done t)
-(setq org-export-with-LaTeX-fragments t)
-
 (eval-after-load 'latex '(add-to-list 'LaTeX-mode-hook (lambda () (flyspell-mode 1))))
 
 (scroll-bar-mode 1)

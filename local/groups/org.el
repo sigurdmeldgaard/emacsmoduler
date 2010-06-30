@@ -1,3 +1,6 @@
+(setq org-log-done t)
+(setq org-export-with-LaTeX-fragments t)
+
 (org-remember-insinuate)
 (setq org-directory "/home/stm/unihome/orgland")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
