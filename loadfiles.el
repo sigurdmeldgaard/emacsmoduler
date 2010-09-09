@@ -78,6 +78,8 @@
 
 (require 'rails)
 
+(require 'iedit)
+
 (require 'sr-speedbar)
 
 (autoload 'log4j-mode "log4j-mode" "Major mode for viewing log files." t)
