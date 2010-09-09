@@ -16,7 +16,6 @@
 (setq TeX-PDF-mode t)
 (add-to-list 'safe-local-variable-values '((TeX-master . rapport) (TeX-master . "rapport")))
 
-(define-globalized-minor-mode always-double-mode double-mode double-mode)
 
 ;; Flymake for LaTeX
 (eval-after-load 'flymake
@@ -31,11 +30,15 @@
      ))
 
 (eval-after-load 'latex '(progn
-                           (defvar tex-compile-commands 'nil)
-                           (add-to-list 'tex-compile-commands '("kpdf %r.pdf &" "%r.pdf"))
+;                           (add-to-list 'tex-compile-commands '("kpdf %r.pdf &" "%r.pdf"))
 			   (add-hook 'LaTeX-mode-hook
-				     (lambda () (speck-mode 1)))
-			   (add-hook 'LaTeX-mode-hook
-				     (lambda () (reftex-mode 1)))
+				     (lambda () (speck-mode 1)
+                                       (visual-line-mode 1)))
 			   (add-hook 'LaTeX-mode-hook
 				     '(lambda () (highlight-fixmes-mode 1)))))
+
+(defun pdfevince ()
+  (add-to-list 'TeX-output-view-style 
+               (quote ("^pdf$" "." "evince %o %(outpage)"))))
+
+(add-hook  'LaTeX-mode-hook  'pdfevince  t)
