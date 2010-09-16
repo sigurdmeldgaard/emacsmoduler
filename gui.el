@@ -1,7 +1,10 @@
 (robust-load-elisp (load (concat grail-dist-elisp "color-theme")))
 (robust-load-elisp (load (concat grail-local-elisp "my-color-theme")))
 
-(my-color-theme)
+(set-variable 'color-theme-is-global nil)
+(if window-system
+    (my-color-theme)
+  (color-theme-tty-dark))
 
 (add-hook 'after-make-frame-functions
           (lambda (frame)
@@ -10,10 +13,6 @@
             (if window-system
                 (my-color-theme)
               (color-theme-tty-dark))))
-
-(setq x-select-enable-clipboard t)
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-(setf x-select-enable-clipboard t)
 
 (custom-set-faces
  '(flymake-errline ((((class color)) (:background "DarkRed"))))
