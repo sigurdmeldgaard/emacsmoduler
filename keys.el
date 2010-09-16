@@ -101,6 +101,9 @@
 (define-key comint-mode-map [C-up] 'comint-previous-matching-input-from-input)
 (define-key comint-mode-map [C-down] 'comint-next-matching-input-from-input)
 
+(eval-after-load "vc-hooks"
+         '(define-key vc-prefix-map "+" 'ediff-revision))
+
 ;(require 'key-chord)
 ;(key-chord-define-global "cv" 'reindent-then-newline-and-indent)
 ;(key-chord-define-global "]\" 'reindent-then-newline-and-indent)
