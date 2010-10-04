@@ -259,6 +259,8 @@
 
              grail-elpa-load-path
 
+             grail-dist-elisp
+
              (if (file-accessible-directory-p grail-dist-elisp)
                (cons grail-dist-elisp
                  (filter-ls grail-dist-elisp t
