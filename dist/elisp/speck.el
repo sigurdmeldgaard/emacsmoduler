@@ -2352,7 +2352,8 @@ Do not delete such a process if another buffer still needs it."
       (process-send-string process string)
       (while (and (not (speck-stop))
 		  (progn
-		    (accept-process-output process 0.01)
+                    (with-local-quit
+                      (accept-process-output process 0.01))
 		    (goto-char (point-max))
 		    ;; Aspell appends an empty line, wait till it's
 		    ;; here.

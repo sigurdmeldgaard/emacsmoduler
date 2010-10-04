@@ -15,7 +15,7 @@ includes faces for Emacs and XEmacs.
 This is what you should put in your .Xdefaults file, if you want to
 change the colors of the menus in Emacs 20 as well:"
   (interactive)
-  (color-theme-gnome2)
+  (color-theme-blue-gnus)
   (let ((color-theme-is-cumulative t))
     (color-theme-blue-erc)
     (color-theme-blue-eshell)

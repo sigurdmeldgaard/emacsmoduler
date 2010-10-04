@@ -145,17 +145,17 @@ editing control characters:
             (error (setq pos t mismatch t)))))
       (goto-char pos))))
 
-(defun toggle-current-word (arg)
+(defun toggle-current-word ()
   "Toggles case at the beginning of the current word"
-  (interactive "p")
+  (interactive "")
   (save-excursion
-    (when (not (looking-at "[ ]"))
-      (forward-word 1)
-      (backward-word arg)
-      (let ((a (buffer-substring (point) (+ (point) 1))))
-        (if (equal a (upcase a))
-            (downcase-region (point) (+ (point) 1))
-          (upcase-region (point) (+ (point) 1)))))))
+    (let* ((word-beginning (car (bounds-of-thing-at-point 'word)))
+           (s word-beginning)
+           (e (+ s 1))
+           (a (buffer-substring s e)))
+      (if (equal a (upcase a))
+          (downcase-region s e)
+          (upcase-region s e)))))
 
 (defun make-containers (n)
   (interactive "p")
@@ -252,7 +252,4 @@ editing control characters:
   (interactive)
   (mapc 'dos-to-unix-eol (dired-get-marked-files)))
 
-
-(paren-toggle-matching-quoted-paren 1)
-(paren-toggle-matching-paired-delimiter 1)
 

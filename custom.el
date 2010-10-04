@@ -1,14 +1,15 @@
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(LaTeX-command "latex --shell-escape")
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(LaTeX-command "latex --shell-escape -file-line-error")
  '(browse-url-browser-function (quote browse-url-generic))
+ '(browse-url-generic-program "firefox")
  '(dired-recursive-copies (quote always))
  '(dired-recursive-deletes (quote top))
  '(global-hl-line-mode nil nil (hl-line))
- '(haskell-program-name "ghci")
+ '(haskell-program-name "ghci \"+.\"")
  '(haskell-refac-chasePaths (quote ("/home/sigurd/haskellleg" "/home/sigurd/haskellleg/HaRe_20012006/tools/base/tests/HaskellLibraries" "/usr/lib/ghc-6.4.1")))
  '(indent-tabs-mode nil)
  '(isa-isatool-command "~/bin/isabelle")
@@ -16,7 +17,6 @@
  '(isar-unicode-tokens-enable t)
  '(isar-x-symbol-enable nil)
  '(ispell-program-name "aspell" t)
- '(load-home-init-file t t)
  '(lpr-command "kprinter")
  '(nxml-slash-auto-complete-flag t)
  '(org-agenda-files nil)
@@ -26,19 +26,6 @@
  '(semantic-c-dependency-system-include-path (quote ("/usr/include" "/opt/local/include")))
  '(server-temp-file-regexp "^/tmp/Re\\|/draft$\\|itsalltext/")
  '(smiley-regexp-alist nil)
- '(speck-save-ask t)
  '(speedbar-directory-unshown-regexp "^\\(CVS\\|RCS\\|SCCS\\|_DARCS\\|\\..*\\)\\'" t)
  '(speedbar-use-images nil t)
- '(spell-command "aspell")
- '(user-mail-address "stm@cs.au.dk"))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(diff-added ((t (:foreground "Green"))))
- '(diff-removed ((t (:foreground "Red"))))
- '(flymake-errline ((((class color)) (:background "DarkRed"))))
- '(flymake-warnline ((((class color)) (:background "DarkBlue"))))
- '(org-code ((t (:inherit shadow :family "monospace"))))
- '(org-table ((((class color) (min-colors 88) (background light)) (:foreground "Blue1" :family "monospace")))))
+ '(spell-command "aspell"))

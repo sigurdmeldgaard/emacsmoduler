@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: texttt
+# key: tt
+# binding: direct-keybinding
+# --
+\\texttt{

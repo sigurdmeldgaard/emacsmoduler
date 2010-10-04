@@ -1,5 +1,6 @@
 (add-to-list 'load-path (expand-file-name "~/sage/data/emacs"))
-(require 'sage-mode)
+(autoload 'sage-mode "sage-mode")
+
 (setq sage-command "sage")
 
 ;; 

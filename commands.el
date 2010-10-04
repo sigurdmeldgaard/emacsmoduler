@@ -10,39 +10,19 @@
   (require 'browse-kill-ring)
   (browse-kill-ring-default-keybindings))
 
-(defvar ido-enable-replace-completing-read t
-      "If t, use ido-completing-read instead of completing-read if possible.
-    
-    Set it to nil using let in around-advice for functions where the
-    original completing-read is required.  For example, if a function
-    foo absolutely must use the original completing-read, define some
-    advice like this:
-    
-    (defadvice foo (around original-completing-read-only activate)
-      (let (ido-enable-replace-completing-read) ad-do-it))")
-
-;; Replace completing-read wherever possible, unless directed otherwise
-;;(defadvice completing-read
-;;  (around use-ido-when-possible activate)
-;;      (if (or (not ido-enable-replace-completing-read) ; Manual override disable ido
-;;              (boundp 'ido-cur-list)) ; Avoid infinite loop from ido calling this
-;;          ad-do-it
-;;        (let ((allcomp (all-completions "" collection predicate)))
-;;          (if allcomp
-;;              (setq ad-return-value
-;;                    (ido-completing-read prompt
-;;                                         allcomp
-;;                                         nil require-match initial-input hist def))
-;;            ad-do-it))))
-
-
-
+(load "ido")
 (ido-mode 1)
-(setq ido-enable-flex-matching t)
-(global-set-key "\M-x" 'smex)
 
 (require 'smex)
 (eval-after-load 'grail '(progn (message "got smex") (smex-initialize)))
+
+;;; Stefan Monnier <foo at acm.org>.
+;;; From: http://www.emacswiki.org/emacs/UnfillParagraph
+(defun unfill-paragraph ()
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
 
 (when (or (functionp 'cua-mode) (featurep 'cua))
   (cua-mode 1)
@@ -51,7 +31,11 @@
    cua-enable-cua-keys t
    cua-enable-register-prefix (quote not-ctrl-u)
    cua-highlight-region-shift-only nil
-   cua-keep-region-after-copy nil))
+   cua-keep-region-after-copy nil)
+(define-key cua--rectangle-keymap " "     'self-insert-command)
+(define-key cua--rectangle-keymap "("     'self-insert-command)
+(define-key cua--rectangle-keymap ")"     'self-insert-command))
+
 
 (setq completion-ignore-case t      ; ignore case when completing...
   read-file-name-completion-ignore-case t) ; ...filenames too
@@ -73,7 +57,7 @@
 (add-hook 'diary-hook 'appt-make-list)
 (set-variable 'timeclock-modeline-display t)
 
-(scroll-bar-mode -1)
+(scroll-bar-mode 1)
 (tool-bar-mode -1)
 (setq inhibit-startup-message 1)
 (abbrev-mode 1)

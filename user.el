@@ -18,6 +18,8 @@
 
 (setq ispell-program-name "aspell")
 
+(require 'etags)
+
 (defun ido-find-tag ()
   "Find a tag using ido"
   (interactive)
@@ -27,6 +29,6 @@
             (unless (integerp x)
               (push (prin1-to-string x t) tag-names)))
           tags-completion-table)
-    (find-tag (ido-completing-read "Tag: " tag-names))))
+    (find-tag (ido-completing-read "Tag: " tag-names nil nil (thing-at-point 'symbol)))))
 
 (require 'fixpath)

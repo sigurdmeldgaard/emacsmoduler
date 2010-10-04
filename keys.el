@@ -34,6 +34,8 @@
 (global-set-key "\C-o" 'find-file-at-point)
 (global-set-key "\C-f" 'isearch-forward)
 
+(global-set-key (kbd "C-;") 'iedit-mode)
+
 (global-set-key "\C-s" 'save-buffer)
 (define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
 (define-key isearch-mode-map "\C-g" 'isearch-repeat-forward)
@@ -52,13 +54,14 @@
 
 (global-set-key [(f10)] 'sr-speedbar-toggle)
 
-(defun quick-compile ()
+(defun compile-using-last-command ()
   (interactive)
   (let
       ((compilation-read-command nil))
     (compile (car compile-history))))
 
-(global-set-key [(f5)] 'quick-compile)
+(global-set-key [(f5)] 'compile-using-last-command)
+(global-set-key [(S-f5)] 'compile)
 
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
@@ -94,6 +97,12 @@
 
  (global-set-key [C-M-down] 'forward-current-word-keep-offset)
  (global-set-key [C-M-up] 'backward-current-word-keep-offset)
+
+(define-key comint-mode-map [C-up] 'comint-previous-matching-input-from-input)
+(define-key comint-mode-map [C-down] 'comint-next-matching-input-from-input)
+
+(eval-after-load "vc-hooks"
+         '(define-key vc-prefix-map "+" 'ediff-revision))
 
 ;(require 'key-chord)
 ;(key-chord-define-global "cv" 'reindent-then-newline-and-indent)
