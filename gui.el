@@ -17,9 +17,6 @@
                 (my-color-theme)
               (color-theme-tty-dark))))
 
-(setq x-select-enable-clipboard t)
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-(setf x-select-enable-clipboard t)
 
 (custom-set-faces
  '(flymake-errline ((((class color)) (:background "DarkRed"))))
