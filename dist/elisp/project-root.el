@@ -1,9 +1,11 @@
 ;;; project-root.el --- Define a project root and take actions based upon it.
 
-;; Copyright (C) 2008 Philip Jackson
+;; Copyright (C) 2008-2010 Philip Jackson, Alexander Solovyov, Vladimir Sidorenko
 
 ;; Author: Philip Jackson <phil@shellarchive.co.uk>
-;; Version: 0.6
+;; Author: Alexander Solovyov <piranha@piranha.org.ua>
+;; Author: Vladimir Sidorenko <yoyavova@gmail.com>
+;; Version: 0.8-pre
 
 ;; This file is not currently part of GNU Emacs.
 
@@ -38,9 +40,14 @@
 ;; An example configuration:
 
 ;; (setq project-roots
-;;       '(("Generic Perl Project"
+;;       `(("Generic Perl Project"
 ;;          :root-contains-files ("t" "lib")
-;;          :on-hit (lambda (p) (message (car p))))))
+;;          :filename-regex ,(regexify-ext-list '(pl pm))
+;;          :on-hit (lambda (p) (message (car p))))
+;;         ("Django project"
+;;          :root-contains-files ("manage.py")
+;;          :filename-regex ,(regexify-ext-list '(py html css js))
+;;          :exclude-paths ("media" "contrib"))))
 ;;
 ;; I bind the following:
 ;;
@@ -48,6 +55,8 @@
 ;; (global-set-key (kbd "C-c p g") 'project-root-grep)
 ;; (global-set-key (kbd "C-c p a") 'project-root-ack)
 ;; (global-set-key (kbd "C-c p d") 'project-root-goto-root)
+;; (global-set-key (kbd "C-c p p") 'project-root-run-default-command)
+;; (global-set-key (kbd "C-c p l") 'project-root-browse-seen-projects)
 ;;
 ;; (global-set-key (kbd "C-c p M-x")
 ;;                 'project-root-execute-extended-command)
@@ -77,6 +86,12 @@
 ;; :root-contains-files maps to `project-root-upward-find-files'. You
 ;; can use any amount of tests.
 
+;;; Configuration:
+
+;; :filename-regex should contain regular expression, which is passed
+;;  to `find` to actually find files for your project.
+;; :exclude-paths can contain paths to omit when searching for files.
+
 ;;; Bookmarks:
 
 ;; If you fancy it you can add a :bookmarks property (with a list of
@@ -85,6 +100,12 @@
 ;; relatively to the project root. Also, the bookmarks will present
 ;; themselves as anything candidates if you configure as instructed
 ;; below.
+
+;;; The default command:
+
+;; If you give a project a :default-command property you can execute
+;; it by running `project-root-run-default-command'. Nothing fancy but
+;; very handy.
 
 ;;; installation:
 
@@ -114,9 +135,21 @@
 ;;              project-root-anything-config-files)
 
 (require 'find-cmd)
+(require 'cl)
+
+(eval-when-compile
+  (defvar anything-project-root)
+  (require 'outline)
+  (require 'dired))
+
+(defun project-root-find-prune (paths)
+  (mapconcat '(lambda (path)
+                (concat " -path \"" path "\" -prune "))
+             paths "-o"))
 
 (defvar project-root-extra-find-args
-  (find-to-string '(prune (name ".svn" ".git")))
+  (project-root-find-prune '("*/.hg" "*/.git" "*/.svn"))
+;  (find-to-string '(prune (name ".svn" ".git" ".hg")))
   "Extra find args that will be AND'd to the defaults (which are
 in `project-root-file-find-process')")
 
@@ -141,6 +174,30 @@ in `project-root-file-find-process')")
 (defvar project-root-max-search-depth 20
   "Don't go any further than this many levels when searching down
 a filesystem tree")
+
+(defvar project-root-find-options
+  ""
+  "Extra options to pass to `find' when using project-root-find-file.
+
+Use this to exclude portions of your project: \"-not -regex \\\".*vendor.*\\\"\"")
+
+(defvar project-root-storage-file "~/.emacs.d/.project-roots"
+  "File, where seen projects info is saved.")
+
+(defvar project-root-project-name-func 'project-root-project-name-from-dir
+  "Function to generate cute name for project.")
+
+(defun project-root-run-default-command ()
+  "Run the command in :default-command, if there is one."
+  (interactive)
+  (with-project-root
+      (let ((command (project-root-data
+                      :default-command project-details)))
+        (when command
+          (funcall command)))))
+
+(defun project-root-project-name (project)
+  (funcall project-root-project-name-func project))
 
 (defun project-root-path-matches (re)
   "Apply RE to the current buffer name returning the first
@@ -189,26 +246,52 @@ project."
   "Grab the bookmarks (if any) for PROJECT."
   (project-root-data :bookmarks project))
 
+(defun project-root-project-name-from-dir (project)
+  "Generate cute name for project from its directory name."
+  (upcase-initials (car (last (split-string (cdr project) "/" t)))))
+
 (defun project-root-gen-org-url (project)
   ;; The first link to the project root itself
-  (concat "** [[file:" (cdr project)
-          "][" (car project)
-          "]] (" (cdr project)
-          ")\n"
-          ;; And now the bookmarks, should there be any
-          (mapconcat
-           (lambda (b)
-             (let ((mark (concat (cdr project) b)))
-               (concat "*** [[file:" mark "][" b "]] (" mark ")")))
-           (project-root-bookmarks project)
-           "\n")
-          "\n"))
+  (concat
+   (format "** [[file:%s][%s]] (%s)"
+           (cdr project)
+           (project-root-project-name project)
+           (cdr project))
+   (mapconcat
+    (lambda (b)
+      (let ((mark (concat (cdr project) b)))
+        (format "*** [[file:%s][%s]] (%s)" mark b mark)))
+    (project-root-bookmarks project)
+    "\n")
+   "\n"))
+
+(define-derived-mode project-root-list-mode org-mode "Project-List"
+  (setq buffer-read-only t))
+
+(dolist (keyfunc
+         `(("q" kill-this-buffer)
+           ("s" isearch-forward)
+           ("r" isearch-backward)
+           (,(kbd "RET")
+            (lambda () (interactive) (beginning-of-line)
+              (org-next-link) (org-open-at-point t)))
+           ("d" (lambda () (interactive)
+                  (setq buffer-read-only nil)
+                  (delete-region
+                   (line-beginning-position)
+                   (line-beginning-position 2))
+                  (setq buffer-read-only t)))))
+
+  (define-key project-root-list-mode-map (car keyfunc) (cadr keyfunc)))
 
 (defun project-root-browse-seen-projects ()
   "Browse the projects that have been seen so far this session."
   (interactive)
   (let ((current-project project-details)
         (point-to nil))
+    (if (not project-root-seen-projects)
+        (project-root-load-roots))
+
     (switch-to-buffer (get-buffer-create "*Seen Project List*"))
     (erase-buffer)
     (insert "* Seen projects\n")
@@ -218,15 +301,32 @@ project."
                 (setq point-to (point)))
               (insert (project-root-gen-org-url p))))
           project-root-seen-projects)
-    (org-mode)
+
+    (project-root-list-mode)
     ;; show everything at second level
     (goto-char (point-min))
     (show-children)
     ;; expand bookmarks for current project only
     (when point-to
       (goto-char (+ point-to 3))
-      (show-children))
-    (setq buffer-read-only t)))
+      (show-children))))
+
+(defun project-root-save-roots ()
+  "Saves seen projects info to file. Note that
+ this is not done automatically"
+  (interactive)
+  (with-temp-buffer
+    (print project-root-seen-projects (current-buffer))
+    (write-file project-root-storage-file)))
+
+(defun project-root-load-roots ()
+  "Loads seen projects info from file"
+  (interactive)
+  (if (file-exists-p project-root-storage-file)
+      (with-temp-buffer
+        (insert-file-contents project-root-storage-file)
+        (setq project-root-seen-projects (read (buffer-string))))))
+
 
 ;; TODO: refactor me
 (defun project-root-fetch (&optional dont-run-on-hit)
@@ -238,7 +338,7 @@ will be used as defined in `project-roots'."
            (unless (mapc
                     (lambda (project)
                       (let ((name (car project))
-                            (run (plist-get (cdr project) :on-hit))
+                            (run (project-root-data :on-hit project))
                             (root (project-root-get-root (cdr project))))
                         (when root
                           (when (and root (not dont-run-on-hit) run)
@@ -248,8 +348,16 @@ will be used as defined in `project-roots'."
              nil))))
     ;; set the actual var used by apps and add to the global project
     ;; list
-    (when (setq project-details project)
-      (add-to-list 'project-root-seen-projects project))))
+    (when project
+      (project-root-set-project project))))
+
+(defun project-root-set-project (p)
+  (if (not project-root-seen-projects)
+      (project-root-load-roots))
+  (when (not (member p project-root-seen-projects))
+    (add-to-list 'project-root-seen-projects project)
+    (project-root-save-roots))
+  (setq project-details project))
 
 (defun project-root-every (pred seq)
   "Return non-nil if pred of each element, of seq is non-nil."
@@ -285,6 +393,11 @@ current-directory."
   (let ((p (or p project-details)))
     (and p (file-exists-p (cdr p)))))
 
+(defun regexify-ext-list (extensions)
+  "Turn a list of extensions to a regexp."
+  (concat ".*\\.\\(" (mapconcat '(lambda (x) (format "%s" x))
+                                extensions "\\|") "\\)"))
+
 (defmacro with-project-root (&rest body)
   "Run BODY with default-directory set to the project root. Error
 if not found. If `project-root' isn't defined then try and find
@@ -292,7 +405,9 @@ one."
   (declare (indent 2))
   (unless project-details (project-root-fetch))
   `(if (project-root-p)
-       (let ((default-directory ,(cdr project-details)))
+       (let ((default-directory ,(cdr project-details))
+             (filename-regex (or ,(project-root-data :filename-regex) ".*"))
+             (exclude-paths ,(project-root-data :exclude-paths)))
          ,@body)
        (error "No project root found")))
 
@@ -308,18 +423,63 @@ one."
 
 (defun project-root-ack ()
   "Run the ack command from the current project root (if ack is
-avalible)."
+available)."
   (interactive)
   (with-project-root
     (if (fboundp 'ack)
         (call-interactively 'ack)
         (error "`ack' not bound"))))
 
+(defun project-root-files ()
+  "Return an alist of all filenames in the project and their path.
+
+Files with duplicate filenames are suffixed with the name of the
+directory they are found in so that they are unique."
+  (let ((file-alist nil))
+    (mapcar (lambda (file)
+              (let ((file-cons (cons (project-root-filename file)
+                                     (expand-file-name file))))
+                (add-to-list 'file-alist file-cons)
+                file-cons))
+            (split-string (shell-command-to-string
+                           (project-root-find-cmd))))))
+
+(setq .project-root-find-executable nil)
+(defun project-root-find-executable ()
+  (if .project-root-find-executable
+      .project-root-find-executable
+    (setq .project-root-find-executable (executable-find "gfind"))
+      (if (not .project-root-find-executable)
+          (setq .project-root-find-executable (executable-find "find")))
+      .project-root-find-executable))
+
+(defun project-root-find-cmd (&rest pattern)
+  (let ((pattern (car pattern)))
+    ;; TODO: use find-cmd here
+    (concat (project-root-find-executable) " " default-directory
+            (project-root-find-prune exclude-paths)
+            project-root-extra-find-args
+            ", -type f -regex \"" filename-regex "\" "
+            (if pattern (concat " -name '*" pattern "*' "))
+            project-root-find-options)))
+
+(defun project-root-filename (file)
+  (let ((name (replace-regexp-in-string default-directory ""
+                                        (expand-file-name file))))
+    (mapconcat 'identity (reverse (split-string name "/")) "\\")))
+
 (defun project-root-find-file ()
   "Find a file from a list of those that exist in the current
 project."
   (interactive)
-  (with-project-root (call-interactively 'find-file)))
+  (with-project-root
+      (let* ((project-files (project-root-files))
+             (file (if (functionp 'ido-completing-read)
+                       (ido-completing-read "Find file in project: "
+                                            (mapcar 'car project-files))
+                     (completing-read "Find file in project: "
+                                      (mapcar 'car project-files)))))
+        (find-file (cdr (assoc file project-files))))))
 
 (defun project-root-execute-extended-command ()
   "Run `execute-extended-command' after having set
@@ -338,7 +498,44 @@ then the current project-details are used."
      (file-exists-p filename)
      (not (null (string-match
                  (regexp-quote (abbreviate-file-name (cdr p)))
-                 filename))))))
+                  (abbreviate-file-name filename)))))))
+
+(defun project-root-buffer-in-project (buffer &optional p)
+  "Check to see if buffer is in project"
+  (let ((filename (buffer-file-name buffer)))
+    (and filename (project-root-file-in-project filename p))))
+
+(defun ido-ignore-not-in-project (name)
+  "Function to use with ido-ignore-buffers.
+ Ignores files that are not in current project."
+  (not (project-root-buffer-in-project (get-buffer name))))
+
+(defun project-root-switch-buffer (arg)
+  "ido-switch-buffer replacement. Ignore buffers that are not in current project,
+   fallback to original ido-switch-buffer if no current project.
+   Can be used with universal-argument to run orifinal function even in project."
+  (interactive "P")
+  (if (and (null arg) (or project-details (project-root-fetch)))
+      (with-project-root
+          (let ((ido-ignore-buffers
+                 (append '(ido-ignore-not-in-project) ido-ignore-files)))
+            (ido-switch-buffer)
+            ))
+    (ido-switch-buffer)))
+
+(defun project-root-projects-names ()
+  "Generates a list of pairs - project name and path."
+  (mapcar (lambda (project)
+            (cons (project-root-project-name project) (cdr project)))
+          project-root-seen-projects))
+
+(defun project-root-open-project ()
+  "Open project with ido-mode."
+  (interactive)
+  (let* ((project-names (project-root-projects-names))
+         (project (ido-completing-read "Select project: " (mapcar 'car project-names))))
+    (find-file (cdr (assoc project project-names)))))
+
 
 ;;; anything.el config
 
