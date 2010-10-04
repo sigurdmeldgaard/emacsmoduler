@@ -874,7 +874,7 @@ Return value is a list with the following elements:
 	    (list v1 v2))))
     (error nil)))
 
-(defvar speck-ispell-vv (speck-ispell-vv)
+(defvar speck-ispell-vv nil ; (speck-ispell-vv)
   "Value returned by `speck-ispell-vv'.")
 
 (defcustom speck-ispell-library-directory
