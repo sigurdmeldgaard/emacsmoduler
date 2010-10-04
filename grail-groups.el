@@ -40,6 +40,8 @@
     "lisp"
     "isabelle"
     "ediff"
+    "grep"
+    "compilation"
     )
   "List of group modules requested by the user.")
 
