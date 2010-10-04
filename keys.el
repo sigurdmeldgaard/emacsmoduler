@@ -100,9 +100,13 @@
 
 (global-set-key (kbd "s-q") 'fill-paragraph)
 
+(global-set-key (kbd "s-p") 'undefined)
+
 (global-set-key  (kbd "<kp-delete>") 'delete-char)
 
 (global-set-key  (kbd "s-w") 'kill-ring-save)
+
+(global-set-key  (kbd "s-:") 'eval-expression)
 
 (defun char-on-key (key char)
   (global-set-key key 
