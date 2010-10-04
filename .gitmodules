@@ -1,3 +1,6 @@
 [submodule "dist/elisp/magit"]
 	path = dist/elisp/magit
 	url = http://github.com/philjackson/magit.git
+[submodule "dist/elisp/org-mode"]
+	path = dist/elisp/org-mode
+	url = git://repo.or.cz/org-mode.git
