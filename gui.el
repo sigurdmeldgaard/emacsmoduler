@@ -21,7 +21,8 @@
  '(flymake-errline ((t (:background "DarkRed"))))
  '(flymake-warnline ((((class color)) (:background "DarkBlue")))))
 
-(set-variable 'visible-bell t)
+(unless (eq window-system 'ns)
+  (set-variable 'visible-bell t))
 
 (add-hook 'calendar-mode-hook
           (lambda () (require 'face-remap) (buffer-face-mode-invoke 'fixed nil)))
