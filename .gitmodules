@@ -4,6 +4,6 @@
 [submodule "dist/elisp/org-mode"]
 	path = dist/elisp/org-mode
 	url = git://repo.or.cz/org-mode.git
-[submodule "expand-region.el"]
-	path = expand-region.el
-	url = ./dist/elisp/expand-region.el/
+[submodule "dist/elisp/expand-region.el"]
+	path = dist/elisp/expand-region.el
+	url = https://github.com/magnars/expand-region.el.git
