@@ -43,33 +43,6 @@
                (message "Searching from bottom: Not found"))))
     (setq case-fold-search old-case-fold-search)))
 
-(defun move-line (&optional n)
-  "Move current line N (1) lines up/down leaving point in place."
-  (interactive "p")
-  (when (null n)
-    (setq n 1))
-  (let ((col (current-column)))
-    (beginning-of-line)
-    (next-line 1)
-    (transpose-lines n)
-    (previous-line 1)
-    (forward-char col)))
-
-(defun insert-date ()
-  (interactive)
-  (insert (current-time-string)))
-
-(defun move-line-up (n)
-  "Moves current line N (1) lines up leaving point in place."
-  (interactive "p")
-  (beginning-of-line)
-  (move-line (if (null n) -1 (- n))))
-
-(defun move-line-down (n)
-  "Moves current line N (1) lines down leaving point in place."
-  (interactive "p")
-  (beginning-of-line)
-  (move-line (if (null n) 1 n)))
 
 (defun my-inferior-erlang (name)
   "Run an inferior Erlang.

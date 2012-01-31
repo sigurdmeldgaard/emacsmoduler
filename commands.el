@@ -13,9 +13,6 @@
 (load "ido")
 (ido-mode 1)
 
-(require 'smex)
-(eval-after-load 'grail '(progn (message "got smex") (smex-initialize)))
-
 ;;; Stefan Monnier <foo at acm.org>.
 ;;; From: http://www.emacswiki.org/emacs/UnfillParagraph
 (defun unfill-paragraph ()
@@ -91,10 +88,10 @@
 (if (file-exists-p better-registers-save-file)
     (load better-registers-save-file))
 
-(require 'command-frequency)
-(command-frequency-mode 1)
-(command-frequency-table-load)
-(command-frequency-autosave-mode 1)
+;(require 'command-frequency)
+;(command-frequency-mode 1)
+;(command-frequency-table-load "~/.emacs.frequencies")
+;(command-frequency-autosave-mode 1)
 
 (load "ido")
 (ido-mode 1)

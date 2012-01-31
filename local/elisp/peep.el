@@ -95,7 +95,7 @@
   
   (setq comment-start "// "
         comment-end   ""
-              comment-start-skip "// *")
+        comment-start-skip "// *")
   
   
   (set (make-local-variable 'font-lock-defaults) '(peep-font-lock-keywords))

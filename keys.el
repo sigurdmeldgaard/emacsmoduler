@@ -4,6 +4,9 @@
 ;(global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
 ;(global-set-key (kbd "<") 'skeleton-pair-insert-maybe)
 
+(load (concat dist-elisp "drag-stuff"))
+(drag-stuff-global-mode t)
+
 (global-set-key "\C-\M-d"
                 (lambda ()
                   (interactive)
@@ -17,8 +20,6 @@
 (global-set-key "\C-p" 'isearch-backward-current-word-keep-offset)
 (global-set-key "\C-n" 'isearch-forward-current-word-keep-offset)
 
-(global-set-key [(meta up)] 'move-line-up)
-(global-set-key [(meta down)] 'move-line-down)
 
 ;;; Redefining keys:
 (global-set-key "\C-xf" 'find-file-at-point)
@@ -130,4 +131,4 @@
 (char-on-key (kbd "M-;") ?æ)
 (char-on-key (kbd "M-:") ?Æ)
 
-(require 'agda-input)
+(load (concat dist-elisp "agda-mode/agda-input"))

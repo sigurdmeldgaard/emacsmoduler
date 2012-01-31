@@ -7,6 +7,5 @@
      (add-to-list 'TeX-output-view-style
                   '("^pdf$" "." "open %o %(outpage)"))))
 
-(robust-load-elisp (load (concat grail-dist-elisp "maxframe")))
+;(require 'growl)
 
-(robust-load-elisp (load (concat grail-dist-elisp "growl")))

@@ -1,6 +1,0 @@
-(require 'yasnippet)
-(yas/load-directory (concat grail-elisp-root "snippets"))
-(yas/define-snippets 'nxhtml-mode nil 'html-mode)
-(yas/global-mode)
-(setq yas/wrap-around-region 'nil)
-(require 'snippet)

@@ -1,19 +1,3 @@
-(robust-load-elisp (load (concat grail-dist-elisp "color-theme")))
-(robust-load-elisp (load (concat grail-local-elisp "my-color-theme")))
-
-(set-variable 'color-theme-is-global nil)
-(if window-system
-    (my-color-theme)
-  (color-theme-tty-dark))
-
-(add-hook 'after-make-frame-functions
-          (lambda (frame)
-            (set-variable 'color-theme-is-global nil)
-            (select-frame frame)
-            (if window-system
-                (my-color-theme)
-              (color-theme-tty-dark))))
-
 (custom-set-faces
  '(diff-added ((t (:foreground "Green"))))
  '(diff-removed ((t (:foreground "Red"))))
@@ -37,6 +21,17 @@
 
 (global-set-key [f3] 'toggle-fullscreen)
 
-(require 'mic-paren)
 (paren-activate)
 (setq default-cursor-type 'box)
+(require 'smooth-scrolling)
+
+(defun smooth-scroll (increment)
+  (scroll-up increment) (sit-for 0.05)
+  (scroll-up increment) (sit-for 0.02)
+  (scroll-up increment) (sit-for 0.02)
+  (scroll-up increment) (sit-for 0.05)
+  (scroll-up increment) (sit-for 0.06)
+  (scroll-up increment))
+
+(global-set-key [(wheel-down)] '(lambda () (interactive) (smooth-scroll 1)))
+(global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1)))

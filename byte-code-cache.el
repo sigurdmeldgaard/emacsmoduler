@@ -42,7 +42,7 @@ intercepts LOADs and byte-compiles files on the fly."
   :type 'boolean
   :group 'byte-code-cache)
 
-(defcustom bcc-blacklist '("/\\.recentf$" "/history$")
+(defcustom bcc-blacklist '("/\\.recentf$" "/history$" "\\.emacs-frequencies$" "tex-site\\.el&")
   "List of regular expressions matching files that should
 not be cached. Files that are modified every time Emacs
 is run are good candidates for this list."
