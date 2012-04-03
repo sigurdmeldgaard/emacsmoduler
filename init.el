@@ -7,7 +7,7 @@
        solarized-theme smex parenface paredit
        org mic-paren color-theme-solarized
        color-theme-sanityinc-solarized color-theme
-       auctex all))
+       auctex all rainbow-delimiters magit))
   (unless (package-installed-p package)
     (package-install package)))
 
