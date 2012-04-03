@@ -43,5 +43,4 @@
 (setq TeX-save-query nil) ;;autosave before compiling
 
 
-
 (require 'fixpath)

@@ -7,7 +7,7 @@
 
 ;;; proofgeneral
 
-(load-file (concat dist-elisp "ProofGeneral/generic/proof-site.el"))
+;(load-file (concat dist-elisp "ProofGeneral/generic/proof-site.el"))
 
 ;;; small-modes - this is stuff that is initialized in a single line
 

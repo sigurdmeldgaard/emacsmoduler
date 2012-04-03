@@ -64,6 +64,7 @@
 (global-set-key [(f5)] 'compile-using-last-command)
 (global-set-key [(S-f5)] 'compile)
 
+(defun smex () (interactive) (smex-initialize) (smex))
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 (global-set-key (kbd "C-c M-x") 'smex-update-and-run)
