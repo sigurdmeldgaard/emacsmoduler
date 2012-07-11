@@ -26,6 +26,8 @@
 
 (setq ispell-program-name "aspell")
 
+(ido-ubiquitous-mode 1)
+
 (defun ido-find-tag ()
   "Find a tag using ido"
   (interactive)
