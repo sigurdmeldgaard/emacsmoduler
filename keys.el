@@ -121,6 +121,8 @@
 
 (global-set-key  (kbd "s-:") 'eval-expression)
 
+(global-set-key (kbd "s-f") 'ido-choose-from-recentf)
+
 (defun char-on-key (key char)
   (global-set-key key 
                   (lexical-let ((ch char)) 
