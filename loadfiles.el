@@ -119,11 +119,17 @@
 (setq js2-use-font-lock-faces t)
 
 ;;; Latex
-            
+
+(defun run-latex ()
+  (interactive)
+  (save-buffer)
+  (TeX-command "LaTeX" 'TeX-master-file nil))
+
 (add-hook 'LaTeX-mode-hook
           (lambda () (speck-mode 1)
             (visual-line-mode 1)
             (TeX-fold-mode 1)            
+            (define-key LaTeX-mode-map [f5] 'run-latex)
             (highlight-fixmes-mode 1)
             (turn-on-reftex)))
 
