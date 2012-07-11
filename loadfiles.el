@@ -19,7 +19,13 @@
 (autoload 'speck-mode "speck" nil t)
 (autoload 'russian-mode "russian-mode" nil t)
 (autoload 'tp-file-contents "typist" nil t)
+(autoload 'mark-next-like-this "mark-more-like-this" nil t)
+(autoload 'mark-previous-like-this "mark-more-like-this" nil t)
+(autoload 'mark-all-like-this "mark-more-like-this" nil t)
 
+(global-set-key (kbd "C-<") 'mark-previous-like-this)
+(global-set-key (kbd "C->") 'mark-next-like-this)
+(global-set-key (kbd "C-*") 'mark-all-like-this)
 
 ;;; expand-region
 
