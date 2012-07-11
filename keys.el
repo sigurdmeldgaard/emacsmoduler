@@ -27,6 +27,7 @@
 (global-set-key "\C-c\C-k" 'compile)
 (global-set-key [f11] 'hippie-expand)
 (global-set-key [f6] 'hippie-expand)
+(global-set-key (kbd "C-:") 'hippie-expand-lines)
 ;(global-set-key (kbd "<return>") 'newline-and-indent)
 
 
@@ -125,11 +126,11 @@
                   (lexical-let ((ch char)) 
                     (lambda () (interactive) (insert-char ch 1)))))
 
-(char-on-key (kbd "M-[") ?å)
-(char-on-key (kbd "M-{") ?Å)
-(char-on-key (kbd "M-'") ?ø)
-(char-on-key (kbd "M-\"") ?Ø)
-(char-on-key (kbd "M-;") ?æ)
-(char-on-key (kbd "M-:") ?Æ)
+(char-on-key (kbd "s-[") ?å)
+(char-on-key (kbd "s-{") ?Å)
+(char-on-key (kbd "s-'") ?ø)
+(char-on-key (kbd "s-\"") ?Ø)
+(char-on-key (kbd "s-;") ?æ)
+(char-on-key (kbd "s-:") ?Æ)
 
 (load (concat dist-elisp "agda-mode/agda-input"))
