@@ -75,8 +75,6 @@
 
 ;;; haskell
 
-(load (concat dist-elisp "haskell-mode-2.3/haskell-site-file.el"))
-
 (add-hook 'haskell-mode-hook 'my-mmm-mode)
 
 (mmm-add-classes
