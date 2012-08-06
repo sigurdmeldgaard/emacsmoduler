@@ -45,4 +45,24 @@
 (setq TeX-save-query nil) ;;autosave before compiling
 
 
+(require 'dbus)
+
+(defun th-evince-sync (file linecol)
+  (message "hej")
+  (let ((buf (get-buffer file))
+        (line (car linecol))
+        (col (cadr linecol)))
+    (if (null buf)
+        (message "Sorry, %s is not opened..." file)
+      (switch-to-buffer buf)
+      (goto-line (car linecol))
+      (unless (= col -1)
+        (move-to-column col)))))
+
+(dbus-register-signal
+ :session nil "/org/gnome/evince/Window/0"
+ "org.gnome.evince.Window" "SyncSource"
+ 'th-evince-sync)
+
+
 (require 'fixpath)

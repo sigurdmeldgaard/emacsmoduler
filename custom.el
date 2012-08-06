@@ -3,13 +3,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(LaTeX-command "latex --shell-escape -file-line-error")
- '(TeX-PDF-mode t t)
+ '(TeX-PDF-mode t)
+ '(TeX-source-correlate-method (quote synctex))
+ '(TeX-source-correlate-mode t)
+ '(TeX-source-correlate-start-server t)
  '(browse-url-browser-function (quote browse-url-generic))
  '(browse-url-generic-program "firefox" t)
  '(column-number-mode t)
  '(cua-mode t nil (cua-base))
- '(custom-safe-themes (quote ("485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" default)))
+ '(custom-safe-themes (quote ("54d1bcf3fcf758af4812f98eb53b5d767f897442753e1aa468cfeb221f8734f9" "374e79a81930979e673b8e0869e135fb2450b18c6474ca145f104e0c6f003267" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" default)))
  '(dired-recursive-copies (quote always))
  '(dired-recursive-deletes (quote top))
  '(display-time-mode t)
@@ -46,8 +48,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(diff-added ((t (:foreground "Green"))))
- '(diff-removed ((t (:foreground "Red"))))
+ '(diff-added ((t (:foreground "Green"))) t)
+ '(diff-removed ((t (:foreground "Red"))) t)
  '(flymake-errline ((((class color)) (:background "DarkRed"))) t)
  '(flymake-warnline ((((class color)) (:background "DarkBlue"))) t)
  '(org-block ((t (:inherit shadow :family "Monaco")))))
