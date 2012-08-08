@@ -1,5 +1,6 @@
 (package-initialize)
 
+(load "byte-code-cache")
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 (dolist (package '(yasnippet yas-jit yasnippet-bundle
@@ -24,13 +25,27 @@
  ((window-system) 
     (load "gui")))
 
-(load
- (cond
-  ((string-equal "gnu/linux" system-type)  "linux.el")
-  ((string-equal "darwin"    system-type)  "darwin.el")
-  ((string-equal "windows-nt"   system-type)  "windows.el")))
+;;; System specific ====================
+(when (string-equal "gnu/linux" system-type)  
+    nil)
+(when (string-equal "darwin"    system-type)  
+    ;; Standard browser.
+    (setq browse-url-generic-program "open")
 
-(load "byte-code-cache")
+  ;; Use built-in viewer for pdf's
+  (eval-after-load 'latex 
+    '(progn
+       (add-to-list 'TeX-output-view-style
+                    '("^pdf$" "." "open %o %(outpage)"))))
+
+                                        ;(require 'growl)
+  )
+
+(when (string-equal "windows-nt"   system-type)
+  (setq w32-apps-modifier 'super)
+  ;; Deactivate speck on windows for now...
+  (defun speck-mode (s) (interactive) nil))
+
 ;;; Settings ====================
 (global-undo-tree-mode)
 
