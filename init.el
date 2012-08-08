@@ -1,4 +1,5 @@
 (package-initialize)
+(setq py-load-pymacs-p nil)
 
 (load "byte-code-cache")
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -9,7 +10,7 @@
        org mic-paren color-theme-solarized
        color-theme-sanityinc-solarized color-theme
        auctex all rainbow-delimiters magit mark-multiple
-       mark-more-like-this ido-ubiquitous haskell-mode))
+       mark-more-like-this ido-ubiquitous haskell-mode pymacs pysmell))
   (unless (package-installed-p package)
     (package-install package)))
 
@@ -27,7 +28,20 @@
 
 ;;; System specific ====================
 (when (string-equal "gnu/linux" system-type)  
-    nil)
+    (require 'dbus)
+
+    (defun th-evince-sync (file linecol)
+      (message "hej")
+      (let ((buf (get-buffer file))
+            (line (car linecol))
+            (col (cadr linecol)))
+        (if (null buf)
+            (message "Sorry, %s is not opened..." file)
+          (switch-to-buffer buf)
+          (goto-line (car linecol))
+          (unless (= col -1)
+            (move-to-column col))))))
+
 (when (string-equal "darwin"    system-type)  
     ;; Standard browser.
     (setq browse-url-generic-program "open")
@@ -54,12 +68,6 @@
   (set-keyboard-coding-system 'latin-1)
   (set-language-environment 'utf-8)
   (server-start))
-
-(if (locate-library "edit-server")
-    (progn
-      (require 'edit-server)
-      (setq edit-server-new-frame nil)
-      (edit-server-start)))
 
 (defconst use-backup-dir t)
 (setq backup-directory-alist (quote ((".*" . "~/backup/temp/")))
@@ -94,20 +102,6 @@
 (setq TeX-save-query nil) ;;autosave before compiling
 
 
-(require 'dbus)
-
-(defun th-evince-sync (file linecol)
-  (message "hej")
-  (let ((buf (get-buffer file))
-        (line (car linecol))
-        (col (cadr linecol)))
-    (if (null buf)
-        (message "Sorry, %s is not opened..." file)
-      (switch-to-buffer buf)
-      (goto-line (car linecol))
-      (unless (= col -1)
-        (move-to-column col)))))
-
 (setq org-agenda-files '("~/Dropbox/org/main.org"))
 
 (dbus-register-signal
@@ -118,7 +112,6 @@
 
 (require 'fixpath)
 
-;;;; Commands ====================
 (setq-default indent-tabs-mode nil)
 
 (defun yes-or-no-p (prompt)
@@ -128,13 +121,12 @@
 
 (let ((byte-compile-warnings '())
       (byte-compile-verbose nil))
-  (require 'browse-kill-ring)
-  (browse-kill-ring-default-keybindings))
+  (autoload 'browse-kill-ring "browse-kill-ring" "" t))
 
 (load "ido")
 (ido-mode 1)
 
-;;; Stefan Monnier <foo at acm.org>.
+;;; By Stefan Monnier <foo at acm.org>.
 ;;; From: http://www.emacswiki.org/emacs/UnfillParagraph
 (defun unfill-paragraph ()
   "Takes a multi-line paragraph and makes it into a single line of text."
@@ -153,7 +145,6 @@
 (define-key cua--rectangle-keymap " "     'self-insert-command)
 (define-key cua--rectangle-keymap "("     'self-insert-command)
 (define-key cua--rectangle-keymap ")"     'self-insert-command))
-
 
 (setq completion-ignore-case t      ; ignore case when completing...
   read-file-name-completion-ignore-case t) ; ...filenames too
@@ -175,12 +166,12 @@
 (add-hook 'diary-hook 'appt-make-list)
 (set-variable 'timeclock-modeline-display t)
 
+;;; Visual simplification
 (scroll-bar-mode 1)
 (tool-bar-mode -1)
 (setq inhibit-startup-message 1)
 (abbrev-mode 1)
 
-(require 'font-lock)
 ;(setq font-lock-support-mode 'lazy-lock-mode)
 (setq font-lock-maximum-decoration t)
 (global-font-lock-mode t)
@@ -217,10 +208,12 @@
 (load "ido")
 (ido-mode 1)
 
-(require 'vc-ediff)
-(require 'find-cmd)
-(require 'project-root)
-(require 'mindent)
+(autoload 'vc-ediff "vc-ediff" "" t)
+
+;; (require 'find-cmd) ;; Deactivated for now
+;; (autoload  "project-root") ;; Deactivated for now
+
+(autoload 'mindent-mode "mindent" "" t) ; Doesn't seem to work
 
 (setq custom-file (concat emacsmoduler-path "/custom.el"))
 (load custom-file)
@@ -352,14 +345,15 @@
 (autoload 'd-mode "d-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.d\\'" . d-mode))
 
-
 ;;; edit-server
 
+(require 'edit-server)
+(setq edit-server-new-frame nil)
+(edit-server-start)
 (add-hook 'edit-server-start-hook 
           (lambda () (set-visited-file-name 
                       (concat temporary-file-directory
                               (buffer-name)))))
-
 
 ;;; factor
 
@@ -375,12 +369,10 @@
 (setq gdb-show-main t)
 (setq gdb-many-windows t)
 
-
 ;;; gnuplot
 
 (autoload 'gnuplot-mode "gnuplot" "gnuplot major mode" t)
 (autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot mode" t)
-
 
 ;;; haskell
 
@@ -408,7 +400,6 @@
   (setq mmm-global-mode 'true))
 
 (setq mmm-submode-decoration-level 0)
-
 
 ;;; install-elisp
 
@@ -471,7 +462,6 @@
 
 (add-hook 'makefile-mode-hook (lambda () (setq indent-tabs-mode t)))
 
-
 ;;; micropython
 
 (defun linux-c-mode ()
@@ -499,7 +489,6 @@
   (lambda() 
     (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
 
-
 ;;; org
 
 (setq org-log-done t)
@@ -525,47 +514,14 @@
 ; 
 ;(setq org-log-done t)
 
-
 ;;; python
 
-;(load "pymacs")
-;(load "python")
-; 
-;;;(eval-after-load "pymacs"
-;;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
-; 
-;(defun load-ropemacs ()
-;    "Load pymacs and ropemacs"
-;    (interactive)
-;    (require 'pymacs)
-;    (pymacs-load "ropemacs" "rope-")
-;    ;; Automatically save project python buffers before refactorings
-;    (setq ropemacs-confirm-saving 'nil))
-; 
-;;(add-hook 'python-mode-hook 'load-ropemacs)
-;;(autoload 'pysmell-mode "pysmell" "Code completion for python" t)
-; 
-;(when (load "flymake" t)
-;  (defun flymake-pyflakes-init ()
-;    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;                       'flymake-create-temp-inplace))
-;           (local-file (file-relative-name
-;                        temp-file
-;                        (file-name-directory buffer-file-name))))
-;      (list "pycheck" (list local-file))))
-; 
-;  (add-to-list 'flymake-allowed-file-name-masks
-;               '("\\.py\\'" flymake-pyflakes-init)))
-; 
-;;(setq python-mode-hook nil)
-;;(add-hook 'python-mode-hook
-;;          '(lambda () (eldoc-mode 1)))
-;;(add-hook 'python-mode-hook
-;;          '(lambda () (flymake-mode 1)))
-; 
-;;(add-hook 'find-file-hook 'flymake-find-file-hook)
-; 
-;(setq python-python-command "python2.6")
+;; Things we would like:
+;; Rope
+;; pyflakes // flymake
+;; Pymacs for some sucky reason doesn't work
+(add-hook 'python-mode-hook
+          '(lambda () (flymake-mode 1)))
 
 ;;; sage
 
@@ -921,6 +877,6 @@ If we're not in a comment, just return nil."
 
 (load (concat dist-elisp "agda-mode/agda-input"))
 
-(load "small")
+(load "small") ;;; Some more homebrewed commands
 
 (provide 'init)
