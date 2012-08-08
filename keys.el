@@ -21,6 +21,8 @@
 (global-set-key "\C-n" 'isearch-forward-current-word-keep-offset)
 
 
+(global-set-key "\C-ca" 'org-agenda)
+
 ;;; Redefining keys:
 (global-set-key "\C-xf" 'find-file-at-point)
 (global-set-key "\C-x\C-b" 'bs-show)

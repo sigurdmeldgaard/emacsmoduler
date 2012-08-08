@@ -59,6 +59,8 @@
       (unless (= col -1)
         (move-to-column col)))))
 
+(setq org-agenda-files '("~/Dropbox/org/main.org"))
+
 (dbus-register-signal
  :session nil "/org/gnome/evince/Window/0"
  "org.gnome.evince.Window" "SyncSource"
