@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(LaTeX-command "latex --shell-escape -file-line-error")
- '(TeX-PDF-mode t t)
+ '(TeX-PDF-mode t)
  '(browse-url-browser-function (quote browse-url-generic))
  '(browse-url-generic-program "firefox" t)
  '(column-number-mode t)
@@ -17,6 +17,8 @@
  '(haskell-program-name "ghci \"+.\"")
  '(haskell-refac-chasePaths (quote ("/home/sigurd/haskellleg" "/home/sigurd/haskellleg/HaRe_20012006/tools/base/tests/HaskellLibraries" "/usr/lib/ghc-6.4.1")))
  '(ido-enable-flex-matching t)
+ '(ido-everywhere t)
+ '(ido-file-extensions-order (quote ("tex" "c" "java" "py" "hs" "t")))
  '(ido-rotate-file-list-default t)
  '(ido-use-filename-at-point (quote guess))
  '(ido-use-virtual-buffers t)

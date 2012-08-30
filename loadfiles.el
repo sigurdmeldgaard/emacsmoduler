@@ -91,9 +91,15 @@
 (setq js2-use-font-lock-faces t)
 
 ;;; Latex
-            
+         
+(defun run-latex () (interactive)
+  (save-buffer)
+  (TeX-command "LaTeX" 'TeX-master-file))
+   
 (add-hook 'LaTeX-mode-hook
-          (lambda () (speck-mode 1)
+          (lambda ()
+            (define-key TeX-mode-map [f5] 'run-latex) 
+            (speck-mode 1)
             (visual-line-mode 1)
             (TeX-fold-mode 1)            
             (highlight-fixmes-mode 1)
