@@ -814,7 +814,7 @@ If we're not in a comment, just return nil."
 (global-unset-key "\C-z")
 (global-set-key "\C-z" 'advertised-undo)
 
-(global-set-key "\C-G" 'magit-status)
+(global-set-key (kbd "C-M-g") 'magit-status)
 (global-set-key "\M-c" 'toggle-current-word)
 
 (global-set-key [(f10)] 'sr-speedbar-toggle)
