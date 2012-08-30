@@ -81,7 +81,7 @@
 
 (setq browse-url-browser-function 'browse-url-generic)
 
-(setq ispell-program-name "aspell")
+(setq ispell-program-name "/usr/bin/aspell")
 
 (ido-ubiquitous-mode 1)
 
@@ -102,7 +102,30 @@
 (setq TeX-save-query nil) ;;autosave before compiling
 
 
-(setq org-agenda-files '("~/Dropbox/org/main.org"))
+(setq org-agenda-files '("~/Dropbox/org/main.org" "~/Dropbox/org/habits.org"))
+(setq org-refile-allow-creating-parent-nodes t)
+(setq org-refile-targets `((nil :maxlevel . 9)
+                           (,org-agenda-files :maxlevel . 9)))
+(setq org-refile-use-outline-path t)
+(setq org-outline-path-complete-in-steps nil)
+(setq org-default-notes-file "~/Dropbox/org/notes.org")
+(define-key global-map [f3] 'org-capture)
+(setq org-capture-templates
+      '(("t" "todo" entry (file "~/Dropbox/org/refile.org")
+         "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+        ("r" "respond" entry (file "~/Dropbox/org/refile.org")
+         "* TODO Respond to %:from on %:subject\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+        ("n" "note" entry (file "~/git/Dropbox/refile.org")
+         "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+        ("j" "Journal" entry (file+datetree "~/Dropbox/org/diary.org")
+         "* %?\n%U\n" :clock-in t :clock-resume t)
+        ("w" "org-protocol" entry (file "~/Dropbox/org/refile.org")
+         "* TODO Review %c\n%U\n" :immediate-finish t)
+        ("p" "Phone call" entry (file "~/Dropbox/org/refile.org")
+         "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+        ("h" "Habit" entry (file+headline "~/Dropbox/org/habits.org" "Habits")
+         "* NEXT %?\n%U\n%a\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))
+
 
 (dbus-register-signal
  :session nil "/org/gnome/evince/Window/0"
@@ -429,7 +452,8 @@
             (TeX-fold-mode 1)            
             (define-key LaTeX-mode-map [f5] 'run-latex)
             (highlight-fixmes-mode 1)
-            (turn-on-reftex)))
+            (turn-on-reftex)
+            (TeX-source-correlate-mode nil)))
 
 (setq org-export-with-LaTeX-fragments t)
  
@@ -494,7 +518,7 @@
 (setq org-log-done t)
 (setq org-export-with-LaTeX-fragments t)
 
-(org-remember-insinuate)
+;(org-remember-insinuate)
 (setq org-directory "~/Dropbox/org/")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (define-key global-map "\C-cr" 'org-remember)
