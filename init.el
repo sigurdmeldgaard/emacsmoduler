@@ -787,13 +787,23 @@ If we're not in a comment, just return nil."
 
 ;;; Redefining keys:
 (global-set-key "\C-xf" 'find-file-at-point)
+(defun bs-start () 
+  (interactive)
+  (bs-show 0)
+  (bs-down 1))
+
+;; Experiment
+(global-set-key "\M-`" 'bs-start)
+(define-key bs-mode-map "\M-`" 'bs-down)
+(define-key bs-mode-map "\M-~" 'bs-up)
+(define-key bs-mode-map "`" 'bs-select)
+
 (global-set-key "\C-x\C-b" 'bs-show)
 (global-set-key "\C-c\C-k" 'compile)
 (global-set-key [f11] 'hippie-expand)
 (global-set-key [f6] 'hippie-expand)
 (global-set-key (kbd "C-:") 'hippie-expand-lines)
 ;(global-set-key (kbd "<return>") 'newline-and-indent)
-
 
 (global-set-key [C-tab] 'goto-matching-paren)
 (global-set-key [S-return] 'open-my-way)
@@ -813,7 +823,7 @@ If we're not in a comment, just return nil."
 (global-set-key "\C-d" 'kill-whole-line)
 
 (global-unset-key "\C-z")
-(global-set-key "\C-z" 'advertised-undo)
+(global-set-key "\C-z" 'undo)
 
 (global-set-key "\C-G" 'magit-status)
 (global-set-key "\M-c" 'toggle-current-word)
@@ -899,7 +909,16 @@ If we're not in a comment, just return nil."
 (char-on-key (kbd "s-;") ?æ)
 (char-on-key (kbd "s-:") ?Æ)
 
-(load (concat dist-elisp "agda-mode/agda-input"))
+
+;(load-file (let ((coding-system-for-read 'utf-8))
+;             (shell-command-to-string "agda-mode locate")))
+
+(add-to-list 'load-path (concat dist-elisp "agda-mode/"))
+
+(load "agda-input")
+(load "agda2")
+
+(global-rainbow-delimiters-mode 1)
 
 (load "small") ;;; Some more homebrewed commands
 

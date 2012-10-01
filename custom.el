@@ -48,8 +48,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(diff-added ((t (:foreground "Green"))) t)
- '(diff-removed ((t (:foreground "Red"))) t)
+ '(diff-added ((t (:foreground "Green"))))
+ '(diff-removed ((t (:foreground "Red"))))
  '(flymake-errline ((((class color)) (:background "DarkRed"))) t)
  '(flymake-warnline ((((class color)) (:background "DarkBlue"))) t)
  '(org-block ((t (:inherit shadow :family "Monaco")))))

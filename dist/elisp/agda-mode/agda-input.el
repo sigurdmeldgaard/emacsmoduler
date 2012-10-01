@@ -41,6 +41,13 @@ removing all space and newline characters."
             (list (string c))))
    (string-to-list s)))
 
+(defun agda-input-character-range (from to)
+  "A string consisting of the characters from FROM to TO."
+  (let (seq)
+    (dotimes (i (1+ (- to from)))
+      (setq seq (cons (+ from i) seq)))
+    (concat (nreverse seq))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions used to tweak translation pairs
 
@@ -125,7 +132,7 @@ This suffix is dropped."
 ;; until agda-input-setup is called at the end of this file.
 
 (defgroup agda-input nil
-  "The Agda 2 input method.
+  "The Agda input method.
 After tweaking these settings you may want to inspect the resulting
 translations using `agda-input-show-translations'."
   :group 'agda2
@@ -152,7 +159,7 @@ order for the change to take effect."
 
 (defcustom agda-input-inherit
   `(("TeX" . (agda-input-compose
-              (agda-input-drop '("geq" "leq" "bullet" "qed"))
+              (agda-input-drop '("geq" "leq" "bullet" "qed" "par"))
               (agda-input-or
                (agda-input-drop-prefix "\\")
                (agda-input-or
@@ -169,6 +176,9 @@ The list consists of pairs (qp . tweak), where qp is the name of
 a Quail package, and tweak is an expression of the same kind as
 `agda-input-tweak-all' which is used to tweak the translation
 pairs of the input method.
+
+The inherited translation pairs are added last, after
+`agda-input-user-translations' and `agda-input-translations'.
 
 If you change this setting manually (without using the
 customization buffer) you need to call `agda-input-setup' in
@@ -256,9 +266,12 @@ order for the change to take effect."
 
   ("entails" . ,(agda-input-to-string-list "⊢⊣⊤⊥⊦⊧⊨⊩⊪⊫⊬⊭⊮⊯"))
 
-  ("|-" . ("⊢"))  ("|-n" . ("⊬"))
-  ("-|" . ("⊣"))
-  ("|=" . ("⊨"))  ("|=n" . ("⊭"))
+  ("|-"   . ("⊢"))  ("|-n"  . ("⊬"))
+  ("-|"   . ("⊣"))
+  ("|="   . ("⊨"))  ("|=n"  . ("⊭"))
+  ("||-"  . ("⊩"))  ("||-n" . ("⊮"))
+  ("||="  . ("⊫"))  ("||=n" . ("⊯"))
+  ("|||-" . ("⊪"))
 
   ;; Divisibility, parallelity.
 
@@ -285,13 +298,6 @@ order for the change to take effect."
   ("clr" . ("⌟"))  ("clR" . ("⌋"))
 
   ;; Various operators/symbols.
-
-  ,@(if (>= emacs-major-version 23)
-        '(("pm"    . ("±"))
-          ("cdot"  . ("·"))
-          ("times" . ("×"))
-          ("div"   . ("÷"))
-          ("neg"   . ("¬"))))
 
   ("qed"       . ("∎"))
   ("x"         . ("×"))
@@ -384,6 +390,9 @@ order for the change to take effect."
   ("d-|"  . ("↧"))  ("dd-" . ("↡"))
   ("ud-|" . ("↨"))
 
+  ("l->" . ("↢"))
+  ("r->" . ("↣"))
+
   ("dz" . ("↯"))
 
   ;; Ellipsis.
@@ -469,8 +478,8 @@ order for the change to take effect."
 
   ;; Parentheses.
 
-  ("(" . ,(agda-input-to-string-list "([{⁅⁽₍〈⎴⟦⟨⟪〈《「『【〔〖〚︵︷︹︻︽︿﹁﹃﹙﹛﹝（［｛｢"))
-  (")" . ,(agda-input-to-string-list ")]}⁆⁾₎〉⎵⟧⟩⟫〉》」』】〕〗〛︶︸︺︼︾﹀﹂﹄﹚﹜﹞）］｝｣"))
+  ("(" . ,(agda-input-to-string-list "([{⁅⁽₍〈⎴⟅⟦⟨⟪⦃〈《「『【〔〖〚︵︷︹︻︽︿﹁﹃﹙﹛﹝（［｛｢"))
+  (")" . ,(agda-input-to-string-list ")]}⁆⁾₎〉⎵⟆⟧⟩⟫⦄〉》」』】〕〗〛︶︸︺︼︾﹀﹂﹄﹚﹜﹞）］｝｣"))
 
   ("[[" . ("⟦"))
   ("]]" . ("⟧"))
@@ -478,6 +487,14 @@ order for the change to take effect."
   (">"  . ("⟩"))
   ("<<" . ("⟪"))
   (">>" . ("⟫"))
+  ("{{" . ("⦃"))
+  ("}}" . ("⦄"))
+
+  ("(b" . ("⟅"))
+  (")b" . ("⟆"))
+
+  ("lbag" . ("⟅"))
+  ("rbag" . ("⟆"))
 
   ;; Primes.
 
@@ -494,6 +511,12 @@ order for the change to take effect."
   ("bub" . ("•"))
   ("buw" . ("◦"))
   ("but" . ("‣"))
+
+  ;; Musical symbols.
+
+  ("note" . ,(agda-input-to-string-list "♩♪♫♬"))
+  ("b"    . ("♭"))
+  ("#"    . ("♯"))
 
   ;; Other punctuation and symbols.
 
@@ -515,7 +538,30 @@ order for the change to take effect."
                                                ⍜⍝⍞⍟⍠⍡⍢⍣⍤⍥⍦⍧⍨⍩⍪⍫⍬⍭⍮
                                                ⍯⍰⍱⍲⍳⍴⍵⍶⍷⍸⍹⍺⎕"))
 
-  ;; Shorter forms of many greek letters.
+  ;; Some combining characters.
+  ;;
+  ;; The following combining characters also have (other)
+  ;; translations:
+  ;; ̀ ́ ̂ ̃ ̄ ̆ ̇ ̈ ̋ ̌ ̣ ̧ ̱
+
+  ("^--" . ,(agda-input-to-string-list"̅̿"))
+  ("_--" . ,(agda-input-to-string-list"̲̳"))
+  ("^~"  . ,(agda-input-to-string-list"̃͌"))
+  ("_~"  .  (                         "̰"))
+  ("^."  . ,(agda-input-to-string-list"̇̈⃛⃜"))
+  ("_."  . ,(agda-input-to-string-list"̣̤"))
+  ("^l"  . ,(agda-input-to-string-list"⃖⃐⃔"))
+  ("^l-" .  (                         "⃖"))
+  ("^r"  . ,(agda-input-to-string-list"⃗⃑⃕"))
+  ("^r-" .  (                         "⃗"))
+  ("^lr" .  (                         "⃡"))
+  ("_lr" .  (                         "͍"))
+  ("^^"  . ,(agda-input-to-string-list"̂̑͆"))
+  ("_^"  . ,(agda-input-to-string-list"̭̯̪"))
+  ("^v"  . ,(agda-input-to-string-list"̌̆"))
+  ("_v"  . ,(agda-input-to-string-list"̬̮̺"))
+
+  ;; Shorter forms of many greek letters plus ƛ.
 
   ("Ga"  . ("α"))  ("GA"  . ("Α"))
   ("Gb"  . ("β"))  ("GB"  . ("Β"))
@@ -527,7 +573,7 @@ order for the change to take effect."
   ("Gth" . ("θ"))  ("GTH" . ("θ"))
   ("Gi"  . ("ι"))  ("GI"  . ("Ι"))
   ("Gk"  . ("κ"))  ("GK"  . ("Κ"))
-  ("Gl"  . ("λ"))  ("GL"  . ("Λ"))
+  ("Gl"  . ("λ"))  ("GL"  . ("Λ"))  ("Gl-" . ("ƛ"))
   ("Gm"  . ("μ"))  ("GM"  . ("Μ"))
   ("Gn"  . ("ν"))  ("GN"  . ("Ν"))
   ("Gx"  . ("ξ"))  ("GX"  . ("Ξ"))
@@ -552,93 +598,6 @@ order for the change to take effect."
   ("?"         . ("¿"))
   ("^a_"       . ("ª"))
   ("^o_"       . ("º"))
-
-  ,@(if (>= emacs-major-version 23)
-        '(("pounds"         . ("£"))
-          ("currency"       . ("¤"))
-          ("yen"            . ("¥"))
-          ("S"              . ("§"))
-          ("\"{}"           . ("¨"))
-          ("copyright"      . ("©"))
-          ("flqq"           . ("«"))
-          ("\"<"            . ("«"))
-          ("-"              . ("­"))
-          ("registered"     . ("®"))
-          ("={}"            . ("¯"))
-          ("^2"             . ("²"))
-          ("^3"             . ("³"))
-          ("'{}"            . ("´"))
-          ("micro"          . ("µ"))
-          ("P"              . ("¶"))
-          ("c{}"            . ("¸"))
-          ("^1"             . ("¹"))
-          ("frqq"           . ("»"))
-          ("\">"            . ("»"))
-          ("frac14"         . ("¼"))
-          ("frac12"         . ("½"))
-          ("frac34"         . ("¾"))
-          ("`A"             . ("À"))
-          ("'A"             . ("Á"))
-          ("^A"             . ("Â"))
-          ("~A"             . ("Ã"))
-          ("\"A"            . ("Ä"))
-          ("AA"             . ("Å"))
-          ("AE"             . ("Æ"))
-          ("cC"             . ("Ç"))
-          ("`E"             . ("È"))
-          ("'E"             . ("É"))
-          ("^E"             . ("Ê"))
-          ("\"E"            . ("Ë"))
-          ("`I"             . ("Ì"))
-          ("'I"             . ("Í"))
-          ("^I"             . ("Î"))
-          ("\"I"            . ("Ï"))
-          ("DH"             . ("Ð"))
-          ("~N"             . ("Ñ"))
-          ("`O"             . ("Ò"))
-          ("'O"             . ("Ó"))
-          ("^O"             . ("Ô"))
-          ("~O"             . ("Õ"))
-          ("\"O"            . ("Ö"))
-          ("O"              . ("Ø"))
-          ("`U"             . ("Ù"))
-          ("'U"             . ("Ú"))
-          ("^U"             . ("Û"))
-          ("\"U"            . ("Ü"))
-          ("'Y"             . ("Ý"))
-          ("TH"             . ("Þ"))
-          ("ss"             . ("ß"))
-          ("`a"             . ("à"))
-          ("'a"             . ("á"))
-          ("^a"             . ("â"))
-          ("~a"             . ("ã"))
-          ("\"a"            . ("ä"))
-          ("aa"             . ("å"))
-          ("ae"             . ("æ"))
-          ("cc"             . ("ç"))
-          ("`e"             . ("è"))
-          ("'e"             . ("é"))
-          ("^e"             . ("ê"))
-          ("\"e"            . ("ë"))
-          ("`i"             . ("ì"))
-          ("'i"             . ("í"))
-          ("^i"             . ("î"))
-          ("\"i"            . ("ï"))
-          ("dh"             . ("ð"))
-          ("~n"             . ("ñ"))
-          ("`o"             . ("ò"))
-          ("'o"             . ("ó"))
-          ("^o"             . ("ô"))
-          ("~o"             . ("õ"))
-          ("\"o"            . ("ö"))
-          ("o"              . ("ø"))
-          ("`u"             . ("ù"))
-          ("'u"             . ("ú"))
-          ("^u"             . ("û"))
-          ("\"u"            . ("ü"))
-          ("'y"             . ("ý"))
-          ("th"             . ("þ"))
-          ("\"y"            . ("ÿ"))))
 
   ;; Circled, parenthesised etc. numbers and letters.
 
@@ -704,6 +663,10 @@ default value when the library is updated.  If you just want to
 add some bindings it is probably a better idea to customize
 `agda-input-user-translations'.
 
+These translation pairs are included after those in
+`agda-input-user-translations', but before the ones inherited
+from other input methods (see `agda-input-inherit').
+
 If you change this setting manually (without using the
 customization buffer) you need to call `agda-input-setup' in
 order for the change to take effect."
@@ -713,10 +676,13 @@ order for the change to take effect."
   :type '(repeat (cons (string :tag "Key sequence")
                        (repeat :tag "Translations" string))))
 
-
 (defcustom agda-input-user-translations nil
   "Like `agda-input-translations', but more suitable for user
-customizations since by default it is empty."
+customizations since by default it is empty.
+
+These translation pairs are included first, before those in
+`agda-input-translations' and the ones inherited from other input
+methods."
   :group 'agda-input
   :set 'agda-input-incorporate-changed-setting
   :initialize 'custom-initialize-default
@@ -751,7 +717,8 @@ Each pair in the list has the form (KEY-SEQUENCE . TRANSLATION)."
 
 (defun agda-input-add-translations (trans)
   "Add the given translations TRANS to the Agda input method.
-TRANS is a list of pairs (KEY-SEQUENCE . TRANSLATION)."
+TRANS is a list of pairs (KEY-SEQUENCE . TRANSLATION). The
+translations are appended to the current translations."
   (with-temp-buffer
     (dolist (tr (agda-input-concat-map (eval agda-input-tweak-all) trans))
       (quail-defrule (car tr) (cdr tr) "Agda" t))))
