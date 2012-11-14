@@ -3,15 +3,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-PDF-mode t)
- '(TeX-source-correlate-method (quote synctex))
- '(TeX-source-correlate-mode t)
- '(TeX-source-correlate-start-server t)
  '(browse-url-browser-function (quote browse-url-generic))
- '(browse-url-generic-program "firefox" t)
+ '(browse-url-generic-program "firefox")
  '(column-number-mode t)
  '(cua-mode t nil (cua-base))
- '(custom-safe-themes (quote ("54d1bcf3fcf758af4812f98eb53b5d767f897442753e1aa468cfeb221f8734f9" "374e79a81930979e673b8e0869e135fb2450b18c6474ca145f104e0c6f003267" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" default)))
+ '(custom-safe-themes (quote ("6cfe5b2f818c7b52723f3e121d1157cf9d95ed8923dbc1b47f392da80ef7495d" "71efabb175ea1cf5c9768f10dad62bb2606f41d110152f4ace675325d28df8bd" "71b172ea4aad108801421cc5251edb6c792f3adbaecfa1c52e94e3d99634dee7" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "54d1bcf3fcf758af4812f98eb53b5d767f897442753e1aa468cfeb221f8734f9" "374e79a81930979e673b8e0869e135fb2450b18c6474ca145f104e0c6f003267" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" default)))
  '(dired-recursive-copies (quote always))
  '(dired-recursive-deletes (quote top))
  '(display-time-mode t)
@@ -31,7 +27,7 @@
  '(load-home-init-file t t)
  '(lpr-command "kprinter")
  '(nxml-slash-auto-complete-flag t t)
- '(org-agenda-files nil)
+ '(org-agenda-files (quote ("~/Dropbox/org/main.org")))
  '(package-archives (quote (("gnu" . "http://elpa.gnu.org/packages/") ("marmelade" . "http://marmalade-repo.org/packages/"))))
  '(python-python-command "python")
  '(safe-local-variable-values (quote ((TeX-master . rapport) (TeX-master . "rapport"))))
@@ -50,6 +46,6 @@
  ;; If there is more than one, they won't work right.
  '(diff-added ((t (:foreground "Green"))))
  '(diff-removed ((t (:foreground "Red"))))
- '(flymake-errline ((((class color)) (:background "DarkRed"))) t)
- '(flymake-warnline ((((class color)) (:background "DarkBlue"))) t)
+ '(flymake-errline ((((class color)) (:background "DarkRed"))))
+ '(flymake-warnline ((((class color)) (:background "DarkBlue"))))
  '(org-block ((t (:inherit shadow :family "Monaco")))))
