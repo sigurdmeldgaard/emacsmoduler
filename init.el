@@ -925,4 +925,28 @@ If we're not in a comment, just return nil."
  
 (load "small") ;;; Some more homebrewed commands
  
+(defun okular-make-url () (concat
+               "file://"
+               (expand-file-name (funcall file (TeX-output-extension) t)
+                         (file-name-directory (TeX-master-file)))
+               "#src:"
+               (TeX-current-line)
+               (expand-file-name (TeX-master-directory))
+               "./"
+               (TeX-current-file-name-master-relative)))
+
+(add-hook 'LaTeX-mode-hook '(lambda ()
+                  (add-to-list 'TeX-expand-list
+                       '("%u" okular-make-url))))
+
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+
+(setq TeX-view-program-list
+     '(("Okular" "okular --unique %u")))
+
+(setq TeX-view-program-selection '((output-pdf "Okular") (output-dvi "Okular")))
+(setq LaTeC-command "latex --synctex=1")
+(setq TeX-source-correlate-method 'synctex)
+
+
 (provide 'init)
