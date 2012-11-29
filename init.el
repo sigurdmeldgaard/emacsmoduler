@@ -562,9 +562,7 @@
  
  
 ;;; snippets
- 
-(add-to-list 'load-path (expand-file-name (concat dist-elisp "yasnippet")))
-(load "yasnippet")
+
 (require 'dropdown-list)
 (defun read-lines (filePath)
   "Return a list of lines in FILEPATH."
