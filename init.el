@@ -9,8 +9,8 @@
        solarized-theme smex parenface paredit
        org mic-paren color-theme-solarized
        color-theme-sanityinc-solarized color-theme
-       auctex all rainbow-delimiters magit mark-multiple
-       mark-more-like-this ido-ubiquitous haskell-mode pymacs pysmell))
+       auctex all rainbow-delimiters magit haskell-mode ghc
+       mark-multiple mark-more-like-this ido-ubiquitous  pymacs pysmell))
   (unless (package-installed-p package)
     (package-install package)))
 
@@ -31,19 +31,7 @@
 ;;; System specific ====================
 (when (string-equal "gnu/linux" system-type)  
     (require 'dbus))
- 
-    ;(defun th-evince-sync (file linecol)
-    ;  (message "hej")
-    ;  (let ((buf (get-buffer file))
-    ;        (line (car linecol))
-    ;        (col (cadr linecol)))
-    ;    (if (null buf)
-    ;        (message "Sorry, %s is not opened..." file)
-    ;      (switch-to-buffer buf)
-    ;      (goto-line (car linecol))
-    ;      (unless (= col -1)
-    ;        (move-to-column col))))))
- 
+  
 (when (string-equal "darwin"    system-type)  
     ;; Standard browser.
     (setq browse-url-generic-program "open")
@@ -134,14 +122,6 @@
          "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
         ("h" "Habit" entry (file+headline "~/Dropbox/org/habits.org" "Habits")
          "* NEXT %?\n%U\n%a\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))
- 
- 
-;(dbus-register-signal
-; :session nil "/org/gnome/evince/Window/0"
-; "org.gnome.evince.Window" "SyncSource"
-; 'th-evince-sync)
- 
- 
 (require 'fixpath)
  
 (setq-default indent-tabs-mode nil)
@@ -826,9 +806,11 @@ If we're not in a comment, just return nil."
 (global-set-key "\C-d" 'kill-whole-line)
  
 (global-unset-key "\C-z")
-(global-set-key "\C-z" 'undo)
- 
-(global-set-key "\C-G" 'magit-status)
+
+(global-set-key "\C-z" 'advertised-undo)
+
+(global-set-key (kbd "C-M-g") 'magit-status)
+
 (global-set-key "\M-c" 'toggle-current-word)
  
 (global-set-key [(f10)] 'sr-speedbar-toggle)
