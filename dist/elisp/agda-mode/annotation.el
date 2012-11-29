@@ -1,7 +1,7 @@
 ;;; annotation.el --- Functions for annotating text with faces and help bubbles
 
 ;;; Commentary:
-;; 
+;;
 
 ;;; Code:
 (require 'cl)
@@ -57,21 +57,18 @@ position."
 
 (defun annotation-annotate (start end anns &optional info goto)
   "Annotate text between START and END in the current buffer.
-ANNS are the annotations to apply.
-All the symbols in ANNS are looked up in
-`annotation-bindings', and the face text property for the given
-character range is set to the resulting list of faces.  If the string
-INFO is non-nil, the mouse-face property is set to highlight, and INFO
-is used as the help-echo string.  If GOTO has the form (FILENAME .
-POSITION), then the mouse-face property is set to highlight and, when
-the user clicks on the annotated text, then point is warped to the
-given position in the given file.
+ANNS are the annotations to apply. All the symbols in ANNS are
+looked up in `annotation-bindings', and the font-lock-face text
+property for the given character range is set to the resulting
+list of faces. If the string INFO is non-nil, the mouse-face
+property is set to highlight, and INFO is used as the help-echo
+string. If GOTO has the form (FILENAME . POSITION), then the
+mouse-face property is set to highlight, and the given
+filename/position will be used by `annotation-goto-indirect' when
+it is invoked with a position in the given range.
 
-Note that if two faces have the same attribute set, then the first one
-takes precedence.
-
-Note also that setting the face text property does not work when
-`font-lock-mode' is activated.
+Note that if a given attribute is defined by several faces, then
+the first face's setting takes precedence.
 
 All characters whose text properties get set also have the
 annotation-annotated property set to t, and
@@ -85,7 +82,7 @@ bounds for the current (possibly narrowed) buffer, or END < START."
   (incf start annotations-offset)
   (incf end annotations-offset)
   (when (and (<= (point-min) start)
-             (<= start end)
+             (< start end)
              (<= end (point-max)))
     (let ((faces (delq nil
                        (mapcar (lambda (ann)
@@ -93,36 +90,42 @@ bounds for the current (possibly narrowed) buffer, or END < START."
                                anns)))
           (props nil))
       (when faces
-        (put-text-property start end 'face faces)
-        (add-to-list 'props 'face))
-      ;; Do this before so `info' can override our default help-echo.
+        (put-text-property start end 'font-lock-face faces)
+        (add-to-list 'props 'font-lock-face))
       (when (consp goto)
         (add-text-properties start end
                              `(annotation-goto ,goto
-                               mouse-face highlight
-                               help-echo "Click mouse-2 to jump to definition"))
+                               mouse-face highlight))
         (add-to-list 'props 'annotation-goto)
-        (add-to-list 'props 'mouse-face)
-        (add-to-list 'props 'help-echo))
+        (add-to-list 'props 'mouse-face))
       (when info
         (add-text-properties start end
                              `(mouse-face highlight help-echo ,info))
         (add-to-list 'props 'mouse-face)
         (add-to-list 'props 'help-echo))
       (when props
-        (add-text-properties start end
-                             `(annotation-annotated   t
-                               annotation-annotations ,props))))))
+        (let ((pos start)
+              mid)
+          (while (< pos end)
+            (setq mid (next-single-property-change pos
+                         'annotation-annotations nil end))
+            (let* ((old-props (get-text-property pos 'annotation-annotations))
+                   (all-props (union old-props props)))
+              (add-text-properties pos mid
+                 `(annotation-annotated t annotation-annotations ,all-props))
+              (setq pos mid))))))))
 
 (defmacro annotation-preserve-mod-p-and-undo (&rest code)
-  "Run CODE preserving both its undo data and modification bit."
+  "Run CODE preserving both the undo data and the modification bit."
   (let ((modp (make-symbol "modp")))
   `(let ((,modp (buffer-modified-p))
+         ;; Don't check if the file is being modified by some other process.
+         (buffer-file-name nil)
+         ;; Don't record those changes on the undo-log.
          (buffer-undo-list t))
      (unwind-protect
          (progn ,@code)
-       ;; FIXME: `restore-buffer-modified-p' would be more efficient.
-       (set-buffer-modified-p ,modp)))))
+       (restore-buffer-modified-p ,modp)))))
 
 (defun annotation-remove-annotations ()
   "Remove all text properties set by `annotation-annotate' in the current buffer.
@@ -146,30 +149,51 @@ Note: This function may fail if there is read-only text in the buffer."
                               props)))))
        (setq pos pos2)))))
 
-(defun annotation-load-file (file)
-  "Load and execute FILE, which should contain calls to `annotation-annotate'.
-First all existing text properties set by `annotation-annotate'
-in the current buffer are removed.  This function preserves the
-file modification stamp of the current buffer and does not
-modify the undo list.
+(defun annotation-load-file (file removep &optional goto-help)
+  "Apply the annotations in FILE.
+If FILE is empty, then this function does nothing; otherwise the
+following comments apply.
+
+If (`funcall' REMOVEP anns) is non-nil, then all existing text
+properties set by `annotation-annotate' in the current buffer are
+first removed. Here anns is a list containing all the
+annotations (third argument to `annotation-annotate') to be
+applied (in some order, with duplicates removed).
+
+FILE, if non-empty, should contain a list of lists (start end
+anns &optional info goto). Text between start and end will be
+annotated with the annotations in the list anns (using
+`annotation-annotate'). If info and/or goto are present they will
+be used as the corresponding arguments to `annotation-annotate'.
+
+If INFO is nil in a call to `annotation-annotate', and the GOTO
+argument is a cons-cell, then the INFO argument is set to
+GOTO-HELP. The intention is that the default help text should
+inform the user about the \"goto\" facility.
+
+This function preserves the file modification stamp of the
+current buffer and does not modify the undo list.
 
 Note: This function may fail if there is read-only text in the buffer."
   (annotation-preserve-mod-p-and-undo
-   (annotation-remove-annotations)
    (when (file-readable-p file)
-     ;; FIXME: Giant security hole!!
-     ;; (load file nil 'nomessage)
      (let ((cmds (with-temp-buffer
-                   (insert "(\n)") (forward-char -2)
-                   (insert-file-contents file)
-                   (goto-char (point-min))
-                   (read (current-buffer)))))
-       (dolist (cmd cmds)
-         (destructuring-bind (f start end anns &optional info goto) cmd
-           (assert (eq f 'annotation-annotate))
-           (setq anns (cadr anns))      ;Strip the `quote'.
-           (setq goto (cadr goto))      ;Strip the `quote'.
-           (annotation-annotate start end anns info goto)))))))
+                    (insert-file-contents file)
+                    (if (eq (point-min) (point-max))
+                        'empty-file
+                      (goto-char (point-min))
+                      (read (current-buffer))))))
+       (when (listp cmds)
+         (let ((anns (delete-dups
+                      (apply 'append (mapcar (lambda (x) (nth 2 x)) cmds)))))
+           (if (funcall removep anns)
+               (annotation-remove-annotations))
+           (dolist (cmd cmds)
+             (destructuring-bind (start end anns &optional info goto) cmd
+               (let ((info (if (and (not info) (consp goto))
+                               goto-help
+                             info)))
+                 (annotation-annotate start end anns info goto))))))))))
 
 (provide 'annotation)
 ;;; annotation.el ends here
