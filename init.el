@@ -50,7 +50,9 @@
 (when (string-equal "darwin"    system-type)  
     ;; Standard browser.
     (setq browse-url-generic-program "open")
-
+    (setenv "PATH" (concat
+                    "/usr/texbin" ":"
+                    (getenv "PATH")))
   ;; Use built-in viewer for pdf's
   (eval-after-load 'latex 
     '(progn
