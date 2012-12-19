@@ -930,5 +930,9 @@ If we're not in a comment, just return nil."
 (setq LaTeC-command "latex --synctex=1")
 (setq TeX-source-correlate-method 'synctex)
 
+;; Save point position between sessions
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file (expand-file-name "~/.emacs-file-locations"))
 
 (provide 'init)
