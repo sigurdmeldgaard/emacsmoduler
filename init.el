@@ -936,4 +936,7 @@ If we're not in a comment, just return nil."
 (setq-default save-place t)
 (setq save-place-file (expand-file-name "~/.emacs-file-locations"))
 
+(global-set-key [C-mouse-4] 'text-scale-increase)
+(global-set-key [C-mouse-5] 'text-scale-decrease)
+
 (provide 'init)
