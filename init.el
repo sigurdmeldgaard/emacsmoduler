@@ -122,6 +122,7 @@
          "* TODO Review %c\n%U\n" :immediate-finish t)
         ("p" "Phone call" entry (file "~/Dropbox/org/refile.org")
          "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+        ("T" "THESIS" entry (file "~/Dropbox/thesis/notes.org"))
         ("h" "Habit" entry (file+headline "~/Dropbox/org/habits.org" "Habits")
          "* NEXT %?\n%U\n%a\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))
 (require 'fixpath)
