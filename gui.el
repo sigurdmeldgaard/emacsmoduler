@@ -23,7 +23,6 @@
 
 (paren-activate)
 (setq default-cursor-type 'box)
-(require 'smooth-scrolling)
 
 (defun smooth-scroll (increment)
   (scroll-up increment) (sit-for 0.05)

@@ -2,20 +2,24 @@
 (setq py-load-pymacs-p nil)
 
 (load "byte-code-cache")
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives 
+    '("marmalade" .
+      "http://marmalade-repo.org/packages/"))
 
-(dolist (package '(yasnippet yas-jit yasnippet-bundle
-       expand-region undo-tree sr-speedbar
-       solarized-theme smex parenface paredit
-       org mic-paren color-theme-solarized
-       color-theme-sanityinc-solarized color-theme
-       auctex all rainbow-delimiters magit haskell-mode ghc
-       mark-multiple mark-more-like-this ido-ubiquitous  pymacs pysmell))
+(dolist (package '(yasnippet expand-region undo-tree sr-speedbar
+       solarized-theme smex parenface paredit org mic-paren
+       color-theme-solarized color-theme-sanityinc-solarized
+       color-theme auctex all rainbow-delimiters magit
+       haskell-mode ghc multiple-cursors ido-ubiquitous speck
+       pymacs pysmell sml-mode key-chord iedit grep-o-matic
+       drag-stuff d-mode browse-kill-ring exec-path-from-shell
+       fold-dwim repository-root))
   (unless (package-installed-p package)
     (package-install package)))
 
-
-
+(exec-path-from-shell-initialize)
 
 (defvar dist-elisp (concat emacsmoduler-path "/dist/elisp/"))
 (defvar local-elisp (concat emacsmoduler-path "/local/elisp/"))
@@ -42,9 +46,8 @@
   (eval-after-load 'latex 
     '(progn
        (add-to-list 'TeX-output-view-style
-                    '("^pdf$" "." "open %o %(outpage)"))))
- 
-                                        ;(require 'growl)
+                    '("^pdf$" "." "open %o %(outpage)"))
+       (add-to-list 'LaTeX-verbatim-environments "comment")))
   )
  
 (when (string-equal "windows-nt"   system-type)
@@ -53,13 +56,37 @@
   (defun speck-mode (s) (interactive) nil))
  
 ;;; Settings ====================
+(setq undo-tree-mode-lighter "")
+
 (global-undo-tree-mode)
+
+;; Add parts of each file's directory to the buffer name if not unique
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
  
-(when (featurep 'mule)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'latin-1)
-  (set-language-environment 'utf-8)
-  (server-start))
+;; Auto refresh buffers
+(global-auto-revert-mode 1)
+
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+
+;; Transparently open compressed files
+(auto-compression-mode t)
+
+;; UTF-8 please
+(setq locale-coding-system 'utf-8) ; pretty
+(set-terminal-coding-system 'utf-8) ; pretty
+(set-keyboard-coding-system 'utf-8) ; pretty
+(set-selection-coding-system 'utf-8) ; please
+(prefer-coding-system 'utf-8) ; with sugar on top
+
+(setq fill-column 80)
+
+;; Show me empty lines after buffer end
+(set-default 'indicate-empty-lines t)
+
+
  
 (defconst use-backup-dir t)
 (setq backup-directory-alist (quote ((".*" . "~/backup/temp/")))
@@ -80,7 +107,11 @@
 (global-set-key (kbd "<M-f7>") 'fold-dwim-hide-all)
 (global-set-key (kbd "<S-M-f7>") 'fold-dwim-show-all)
  
+(ido-mode 1)
+
 (ido-ubiquitous-mode 1)
+
+(setq ido-file-extensions-order '(".tex" t))
  
 (defun ido-find-tag ()
   "Find a tag using ido"
@@ -136,10 +167,7 @@
 (let ((byte-compile-warnings '())
       (byte-compile-verbose nil))
   (autoload 'browse-kill-ring "browse-kill-ring" "" t))
- 
-(load "ido")
-(ido-mode 1)
- 
+  
 ;;; By Stefan Monnier <foo at acm.org>.
 ;;; From: http://www.emacswiki.org/emacs/UnfillParagraph
 (defun unfill-paragraph ()
@@ -163,9 +191,9 @@
 (setq completion-ignore-case t      ; ignore case when completing...
   read-file-name-completion-ignore-case t) ; ...filenames too
  
-(setq scroll-conservatively 10000)  ; smooth scrolling
- 
- 
+;; Allow recursive minibuffers
+(setq enable-recursive-minibuffers t)
+
 (setq search-highlight t)           ; highlight when searching... 
 (setq query-replace-highlight t)    ; ...and replacing
  
@@ -332,7 +360,6 @@
 (autoload 'haml-mode "haml-mode" nil t)
 (autoload 'erlang-mode "erlang" nil t)
 (autoload 'peep-mode "peep" nil t)
-(autoload 'speck-mode "speck" nil t)
 (autoload 'russian-mode "russian-mode" nil t)
 (autoload 'tp-file-contents "typist" nil t)
 (autoload 'mark-next-like-this "mark-more-like-this" nil t)
@@ -438,7 +465,7 @@
   (TeX-command "LaTeX" 'TeX-master-file nil))
  
 (add-hook 'LaTeX-mode-hook
-	  (lambda () (speck-mode 1)
+	  (lambda () ;(speck-mode 1)
 	    (visual-line-mode 1)
 	    (TeX-fold-mode 1)		 
 	    (define-key LaTeX-mode-map [f5] 'run-latex)
@@ -460,7 +487,7 @@
  
 (setq TeX-PDF-mode t)
  
-;;; Flymake for LaTeX
+;; Flymake for LaTeX
 (eval-after-load 'flymake
   '(progn
      (push
@@ -505,6 +532,11 @@
  
 ;;; org
  
+(setq org-replace-disputed-keys t)
+
+;; Fontify org-mode code blocks
+(setq org-src-fontify-natively t)
+
 (setq org-log-done t)
 (setq org-export-with-LaTeX-fragments t)
  
@@ -571,14 +603,11 @@
     (split-string
      (buffer-string) "\n" t)) )
  
-(setq yas/prompt-functions '(yas/dropdown-prompt
+(yas-global-mode 1)
+(setq yas-prompt-functions '(yas/dropdown-prompt
 			     yas/ido-prompt
 			     yas/completing-prompt))
-(yas/load-directory (concat emacsmoduler-path "/snippets"))
-(yas/define-snippets 'nxhtml-mode nil 'html-mode)
-(yas/global-mode 1)
-(setq yas/wrap-around-region 'nil)
-;(require 'snippet)
+(yas-load-directory (concat emacsmoduler-path "/snippets"))
  
 ;;; html
  
@@ -698,14 +727,15 @@ If we're not in a comment, just return nil."
      (add-to-list 'isar-shortcut-alist '("|}" . "⦄"))))
  
 ;;; ediff
- 
+
+(setq ediff-diff-options "-w")
 (setq ediff-split-window-function 'split-window-horizontally)
- 
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;;; grep
  
-(require 'repository-root) ; optional: needed for repository-wide search
-(require 'grep-o-matic)
 (setq grep-o-matic-repository-root-function 'repository-root)
+(repository-root "") ;; to activate load
 (add-to-list 'repository-root-matchers repository-root-matcher/git)
 (add-to-list 'repository-root-matchers repository-root-matcher/hg)
 (add-to-list 'repository-root-matchers repository-root-matcher/darcs)
@@ -749,7 +779,6 @@ If we're not in a comment, just return nil."
 ;(global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
 ;(global-set-key (kbd "<") 'skeleton-pair-insert-maybe)
  
-(load (concat dist-elisp "drag-stuff"))
 (drag-stuff-global-mode t)
  
 (global-set-key "\C-\M-d"
@@ -771,7 +800,180 @@ If we're not in a comment, just return nil."
 ;;; Redefining keys:
 (global-set-key "\C-xf" 'find-file-at-point)
  
-;; Experiment
+;;; Hippie expand
+(defvar he-search-loc-backward (make-marker))
+(defvar he-search-loc-forward (make-marker))
+
+(defun try-expand-dabbrev-closest-first (old)
+  "Try to expand word \"dynamically\", searching the current buffer.
+The argument OLD has to be nil the first call of this function, and t
+for subsequent calls (for further possible expansions of the same
+string).  It returns t if a new expansion is found, nil otherwise."
+  (let (expansion)
+    (unless old
+      (he-init-string (he-dabbrev-beg) (point))
+      (set-marker he-search-loc-backward he-string-beg)
+      (set-marker he-search-loc-forward he-string-end))
+
+    (if (not (equal he-search-string ""))
+        (save-excursion
+          (save-restriction
+            (if hippie-expand-no-restriction
+                (widen))
+
+            (let (forward-point
+                  backward-point
+                  forward-distance
+                  backward-distance
+                  forward-expansion
+                  backward-expansion
+                  chosen)
+
+              ;; search backward
+              (goto-char he-search-loc-backward)
+              (setq expansion (he-dabbrev-search he-search-string t))
+
+              (when expansion
+                (setq backward-expansion expansion)
+                (setq backward-point (point))
+                (setq backward-distance (- he-string-beg backward-point)))
+
+              ;; search forward
+              (goto-char he-search-loc-forward)
+              (setq expansion (he-dabbrev-search he-search-string nil))
+
+              (when expansion
+                (setq forward-expansion expansion)
+                (setq forward-point (point))
+                (setq forward-distance (- forward-point he-string-beg)))
+
+              ;; choose depending on distance
+              (setq chosen (cond
+                            ((and forward-point backward-point)
+                             (if (< forward-distance backward-distance) :forward :backward))
+
+                            (forward-point :forward)
+                            (backward-point :backward)))
+
+              (when (equal chosen :forward)
+                (setq expansion forward-expansion)
+                (set-marker he-search-loc-forward forward-point))
+
+              (when (equal chosen :backward)
+                (setq expansion backward-expansion)
+                (set-marker he-search-loc-backward backward-point))
+
+              ))))
+
+    (if (not expansion)
+        (progn
+          (if old (he-reset-string))
+          nil)
+      (progn
+        (he-substitute-string expansion t)
+        t))))
+
+(defun try-expand-line-closest-first (old)
+  "Try to complete the current line to an entire line in the buffer.
+The argument OLD has to be nil the first call of this function, and t
+for subsequent calls (for further possible completions of the same
+string).  It returns t if a new completion is found, nil otherwise."
+  (let ((expansion ())
+        (strip-prompt (and (get-buffer-process (current-buffer))
+                           comint-use-prompt-regexp
+                           comint-prompt-regexp)))
+    (unless old
+      (he-init-string (he-line-beg strip-prompt) (point))
+      (set-marker he-search-loc-backward he-string-beg)
+      (set-marker he-search-loc-forward he-string-end))
+
+    (if (not (equal he-search-string ""))
+        (save-excursion
+          (save-restriction
+            (if hippie-expand-no-restriction
+                (widen))
+
+            (let (forward-point
+                  backward-point
+                  forward-distance
+                  backward-distance
+                  forward-expansion
+                  backward-expansion
+                  chosen)
+
+              ;; search backward
+              (goto-char he-search-loc-backward)
+              (setq expansion (he-line-search he-search-string
+                                              strip-prompt t))
+
+              (when expansion
+                (setq backward-expansion expansion)
+                (setq backward-point (point))
+                (setq backward-distance (- he-string-beg backward-point)))
+
+              ;; search forward
+              (goto-char he-search-loc-forward)
+              (setq expansion (he-line-search he-search-string
+                                              strip-prompt nil))
+
+              (when expansion
+                (setq forward-expansion expansion)
+                (setq forward-point (point))
+                (setq forward-distance (- forward-point he-string-beg)))
+
+              ;; choose depending on distance
+              (setq chosen (cond
+                            ((and forward-point backward-point)
+                             (if (< forward-distance backward-distance) :forward :backward))
+
+                            (forward-point :forward)
+                            (backward-point :backward)))
+
+              (when (equal chosen :forward)
+                (setq expansion forward-expansion)
+                (set-marker he-search-loc-forward forward-point))
+
+              (when (equal chosen :backward)
+                (setq expansion backward-expansion)
+                (set-marker he-search-loc-backward backward-point))
+
+              ))))
+
+    (if (not expansion)
+        (progn
+          (if old (he-reset-string))
+          ())
+      (progn
+        (he-substitute-string expansion t)
+        t))))
+
+;; Hippie expand: sometimes too hip
+(setq hippie-expand-try-functions-list '(try-expand-dabbrev-closest-first
+                                         try-complete-file-name
+                                         try-expand-dabbrev-all-buffers
+                                         try-expand-dabbrev-from-kill
+                                         try-expand-all-abbrevs
+                                         try-complete-lisp-symbol-partially
+                                         try-complete-lisp-symbol))
+
+;; Create own function to expand lines (C-S-.)
+(defun hippie-expand-lines ()
+  (interactive)
+  (let ((hippie-expand-try-functions-list '(try-expand-line-closest-first
+                                            try-expand-line-all-buffers)))
+    (end-of-line)
+    (hippie-expand nil)))
+
+;; Don't case-fold when expanding with hippe
+(defun hippie-expand-no-case-fold ()
+  (interactive)
+  (let ((case-fold-search nil))
+    (hippie-expand nil)))
+
+
+;;; Experiment
+
+;;; Something like Alt-Tab switching between buffers
 (defun bs-start () 
   (interactive)
   (define-key bs-mode-map "\M-`" 'bs-down)
@@ -904,7 +1106,12 @@ If we're not in a comment, just return nil."
 (load "agda2")
  
 (global-rainbow-delimiters-mode 1)
- 
+(set-face-attribute 'rainbow-delimiters-unmatched-face
+  nil
+  :box
+   '(:line-width 2 :color "Red" :style released-button)
+  :foreground  "Red")
+
 (load "small") ;;; Some more homebrewed commands
  
 (defun okular-make-url () (concat
@@ -923,12 +1130,13 @@ If we're not in a comment, just return nil."
 
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 
-(setq TeX-view-program-list
-     '(("Okular" "okular --unique %u")))
-
-(setq TeX-view-program-selection '((output-pdf "Okular") (output-dvi "Okular")))
+;(setq TeX-view-program-selection '((output-pdf "Okular") (output-dvi "Okular")))
 (setq LaTeC-command "latex --synctex=1")
 (setq TeX-source-correlate-method 'synctex)
 
+(global-set-key (kbd "M-j")
+            (lambda ()
+                  (interactive)
+                  (join-line -1)))
 
 (provide 'init)
