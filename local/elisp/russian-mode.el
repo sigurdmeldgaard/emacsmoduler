@@ -22,6 +22,7 @@
 (define-key russian-mode-map [(super q)] 'toggle-input-method)
 (define-key russian-mode-map [(super z)] 'dansk)
 (define-key russian-mode-map [(super k)] 'compile)
+(define-key russian-mode-map (kbd "M-1") 'acute)
 (define-key russian-mode-map [(super x)] 'russisk)
 ;(define-key russian-mode-map [(super s)] 'acute-it)
 ;(define-key russian-mode-map [(super a)] 'acute-a)
@@ -69,6 +70,9 @@
     (save-excursion
       (delete-backward-char 1))
     (acute-letter letter)))
+
+(defun acute () (interactive) (insert ?\u0301))
+
 (defun acute-a () (interactive) (acute-letter "е"))
 (defun acute-je () (interactive) (acute-letter "а"))
 (defun acute-o () (interactive) (acute-letter "о"))
