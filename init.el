@@ -1,3 +1,34 @@
+;;; Important keybindings - without these it is a hell to debug .emacs
+
+(global-set-key "\C-x\C-b" 'bs-show)
+(global-set-key "\C-c\C-k" 'compile)
+(global-set-key [f11] 'hippie-expand)
+(global-set-key [f6] 'hippie-expand)
+(global-set-key (kbd "C-:") 'hippie-expand-lines)
+ 
+(global-set-key [C-tab] 'goto-matching-paren)
+(global-set-key [S-return] 'open-my-way)
+(global-set-key "\C-o" 'find-file-at-point)
+(global-set-key "\C-f" 'isearch-forward)
+ 
+(global-set-key (kbd "C-;") 'iedit-mode)
+ 
+(global-set-key "\C-s" 'save-buffer)
+(define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
+(define-key isearch-mode-map "\C-g" 'isearch-repeat-forward)
+(define-key isearch-mode-map [backspace] 'isearch-delete-char)
+ 
+(global-unset-key "\C-d")
+(set-variable 'kill-whole-line t)
+(global-set-key [delete] 'delete-char)
+(global-set-key "\C-d" 'kill-whole-line)
+ 
+(global-unset-key "\C-z")
+
+(global-set-key "\C-z" 'advertised-undo)
+
+;;; package initialisation
+
 (package-initialize)
 (setq py-load-pymacs-p nil)
 
@@ -771,11 +802,6 @@ If we're not in a comment, just return nil."
 (add-to-list 'auto-mode-alist '("\\.html" . nxhtml-mode))
  
 ;;;; Keybindings ====================
-;(setq skeleton-pair t)
-;(global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
-;(global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
-;(global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
-;(global-set-key (kbd "<") 'skeleton-pair-insert-maybe)
  
 (drag-stuff-global-mode t)
  
@@ -986,7 +1012,6 @@ string).  It returns t if a new completion is found, nil otherwise."
 (global-set-key [f11] 'hippie-expand)
 (global-set-key [f6] 'hippie-expand)
 (global-set-key (kbd "C-:") 'hippie-expand-lines)
-;(global-set-key (kbd "<return>") 'newline-and-indent)
  
 (global-set-key [C-tab] 'goto-matching-paren)
 (global-set-key [S-return] 'open-my-way)
