@@ -156,6 +156,8 @@
     (find-tag (ido-completing-read "Tag: " tag-names nil nil (thing-at-point 'symbol)))))
  
 ;Hacks to make AUCtex happy
+(setq byte-compile-verbose t)
+(setq byte-compile-warnings t)
 (setq TeX-save-query nil) ;;autosave before compiling
  
 (add-hook 'org-mode-hook 'reftex-mode)
