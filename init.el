@@ -3,10 +3,10 @@
 
 (load "byte-code-cache")
 (add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/"))
+  '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives 
     '("marmalade" .
-      "http://marmalade-repo.org/packages/"))
+      "http://marmalade-repo.org/packages/") t)
 
 (dolist (package '(yasnippet expand-region undo-tree sr-speedbar
        solarized-theme smex parenface paredit org mic-paren
@@ -15,7 +15,7 @@
        haskell-mode ghc multiple-cursors ido-ubiquitous speck
        pymacs pysmell sml-mode key-chord iedit grep-o-matic
        drag-stuff d-mode browse-kill-ring exec-path-from-shell
-       fold-dwim repository-root))
+       fold-dwim repository-root smooth-scrolling))
   (unless (package-installed-p package)
     (package-install package)))
 
@@ -86,7 +86,7 @@
 ;; Show me empty lines after buffer end
 (set-default 'indicate-empty-lines t)
 
-
+(set-fringe-style 0)
  
 (defconst use-backup-dir t)
 (setq backup-directory-alist (quote ((".*" . "~/backup/temp/")))
@@ -125,8 +125,6 @@
     (find-tag (ido-completing-read "Tag: " tag-names nil nil (thing-at-point 'symbol)))))
  
 ;Hacks to make AUCtex happy
-(setq byte-compile-verbose t)
-(setq byte-compile-warnings t)
 (setq TeX-save-query nil) ;;autosave before compiling
  
 (add-hook 'org-mode-hook 'reftex-mode)
