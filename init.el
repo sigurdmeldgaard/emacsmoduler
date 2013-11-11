@@ -46,7 +46,7 @@
        haskell-mode ghc multiple-cursors ido-ubiquitous speck
        pymacs pysmell sml-mode key-chord iedit grep-o-matic
        drag-stuff d-mode browse-kill-ring exec-path-from-shell
-       fold-dwim repository-root smooth-scrolling))
+       fold-dwim repository-root smooth-scrolling elpy))
   (unless (package-installed-p package)
     (package-install package)))
 
