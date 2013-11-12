@@ -184,6 +184,7 @@
          "* TODO Review %c\n%U\n" :immediate-finish t)
         ("p" "Phone call" entry (file "~/Dropbox/org/refile.org")
          "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+        ("T" "THESIS" entry (file "~/Dropbox/thesis/notes.org"))
         ("h" "Habit" entry (file+headline "~/Dropbox/org/habits.org" "Habits")
          "* NEXT %?\n%U\n%a\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))
 (require 'fixpath)
@@ -1163,5 +1164,13 @@ string).  It returns t if a new completion is found, nil otherwise."
             (lambda ()
                   (interactive)
                   (join-line -1)))
+
+;; Save point position between sessions
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file (expand-file-name "~/.emacs-file-locations"))
+
+(global-set-key [C-mouse-4] 'text-scale-increase)
+(global-set-key [C-mouse-5] 'text-scale-decrease)
 
 (provide 'init)
