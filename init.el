@@ -39,7 +39,7 @@
     '("marmalade" .
       "http://marmalade-repo.org/packages/") t)
 
-(dolist (package '(yasnippet expand-region undo-tree sr-speedbar
+(setq packages-wanted '(yasnippet expand-region undo-tree sr-speedbar
        solarized-theme smex parenface paredit org mic-paren
        color-theme-solarized color-theme-sanityinc-solarized
        color-theme auctex all rainbow-delimiters magit
@@ -47,8 +47,17 @@
        pymacs pysmell sml-mode key-chord iedit grep-o-matic
        drag-stuff d-mode browse-kill-ring exec-path-from-shell
        fold-dwim repository-root smooth-scrolling elpy))
+
+(dolist (package packages-wanted)
   (unless (package-installed-p package)
-    (package-install package)))
+    (message "Package %s is not installed - try install-missing-packages"
+             package)))
+
+(defun install-missing-packages ()
+  (interactive)
+  (dolist (package packages-wanted)
+    (unless (package-installed-p package)
+      (package-install package))))
 
 (exec-path-from-shell-initialize)
 
