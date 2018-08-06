@@ -32,6 +32,7 @@
 (package-initialize)
 (setq py-load-pymacs-p nil)
 
+(add-to-list 'load-path emacsmoduler-path)
 (load "byte-code-cache")
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -56,10 +57,15 @@
 (defun install-missing-packages ()
   (interactive)
   (dolist (package packages-wanted)
-    (unless (package-installed-p package)
-      (package-install package))))
+    (if (package-installed-p package)
+        (message "already installed %s" package)
+      (progn
+        (message "installing %s" package)
+        (package-install package)
+           ))))
 
-(exec-path-from-shell-initialize)
+(if (package-installed-p 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
 
 (defvar dist-elisp (concat emacsmoduler-path "/dist/elisp/"))
 (defvar local-elisp (concat emacsmoduler-path "/local/elisp/"))
@@ -298,7 +304,7 @@
  
 (autoload 'mindent-mode "mindent" "" t) ; Doesn't seem to work
  
-(setq custom-file (concat emacsmoduler-path "/custom.el"))
+(setq custom-file (concat emacsmoduler-path "custom.el"))
 (load custom-file)
  
 (define-key isearch-mode-map [(control shift o)]
@@ -636,7 +642,7 @@
  
 ;;; snippets
 
-(require 'dropdown-list)
+;(require 'dropdown-list)
 (defun read-lines (filePath)
   "Return a list of lines in FILEPATH."
   (with-temp-buffer
@@ -775,15 +781,15 @@ If we're not in a comment, just return nil."
 
 ;;; grep
  
-(setq grep-o-matic-repository-root-function 'repository-root)
-(repository-root "") ;; to activate load
-(add-to-list 'repository-root-matchers repository-root-matcher/git)
-(add-to-list 'repository-root-matchers repository-root-matcher/hg)
-(add-to-list 'repository-root-matchers repository-root-matcher/darcs)
-(add-to-list 'repository-root-matchers repository-root-matcher/autoconf)
-(add-to-list 'repository-root-matchers repository-root-matcher/bzr)
-(add-to-list 'repository-root-matchers repository-root-matcher/svn)
-(add-to-list 'repository-root-matchers repository-root-matcher/cvs)
+;(setq grep-o-matic-repository-root-function 'repository-root)
+;(repository-root "") ;; to activate load
+;(add-to-list 'repository-root-matchers repository-root-matcher/git)
+;(add-to-list 'repository-root-matchers repository-root-matcher/hg)
+;(add-to-list 'repository-root-matchers repository-root-matcher/darcs)
+;(add-to-list 'repository-root-matchers repository-root-matcher/autoconf)
+;(add-to-list 'repository-root-matchers repository-root-matcher/bzr)
+;(add-to-list 'repository-root-matchers repository-root-matcher/svn)
+;(add-to-list 'repository-root-matchers repository-root-matcher/cvs)
  
  
 ;;; compilation
@@ -1140,12 +1146,12 @@ string).  It returns t if a new completion is found, nil otherwise."
 (load "agda-input")
 (load "agda2")
  
-(global-rainbow-delimiters-mode 1)
-(set-face-attribute 'rainbow-delimiters-unmatched-face
-  nil
-  :box
-   '(:line-width 2 :color "Red" :style released-button)
-  :foreground  "Red")
+;(global-rainbow-delimiters-mode 1)
+;; (set-face-attribute 'rainbow-delimiters-unmatched-face
+;;   nil
+;;   :box
+;;    '(:line-width 2 :color "Red" :style released-button)
+;;   :foreground  "Red")
 
 (load "small") ;;; Some more homebrewed commands
  
