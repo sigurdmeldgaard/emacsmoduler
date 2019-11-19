@@ -45,7 +45,8 @@
        haskell-mode ghc multiple-cursors
        sml-mode key-chord iedit
        drag-stuff d-mode browse-kill-ring exec-path-from-shell
-       fold-dwim smooth-scrolling elpy exec-path-from-shell ido-completing-read+))
+       fold-dwim smooth-scrolling elpy exec-path-from-shell
+       ido-completing-read+ diff-hl))
 
 (dolist (package packages-wanted)
   (unless (package-installed-p package)
@@ -99,6 +100,10 @@
   (defun speck-mode (s) (interactive) nil))
  
 ;;; Settings ====================
+(when (package-installed-p 'diff-hl)
+  (global-diff-hl-mode-enable-in-buffers))
+
+
 (when (package-installed-p 'undo-tree)
   (setq undo-tree-mode-lighter "")
   (global-undo-tree-mode))
