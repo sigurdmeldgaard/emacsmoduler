@@ -30,23 +30,21 @@
 ;;; package initialisation
 
 (package-initialize)
-(setq py-load-pymacs-p nil)
 
 (load "byte-code-cache")
-(add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives 
-    '("marmalade" .
-      "http://marmalade-repo.org/packages/") t)
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
+
+(setq emacsmoduler-path (file-name-directory load-file-name))
 
 (setq packages-wanted '(yasnippet expand-region undo-tree sr-speedbar
-       solarized-theme smex parenface paredit org mic-paren
+       solarized-theme smex  paredit org mic-paren
        color-theme-solarized color-theme-sanityinc-solarized
        color-theme auctex all rainbow-delimiters magit
-       haskell-mode ghc multiple-cursors ido-ubiquitous speck
-       pymacs pysmell sml-mode key-chord iedit grep-o-matic
+       haskell-mode ghc multiple-cursors
+       sml-mode key-chord iedit
        drag-stuff d-mode browse-kill-ring exec-path-from-shell
-       fold-dwim repository-root smooth-scrolling elpy))
+       fold-dwim smooth-scrolling elpy exec-path-from-shell ido-completing-read+))
 
 (dolist (package packages-wanted)
   (unless (package-installed-p package)
@@ -55,14 +53,17 @@
 
 (defun install-missing-packages ()
   (interactive)
+  (package-refresh-contents)
   (dolist (package packages-wanted)
     (unless (package-installed-p package)
+      (message
+       "installing %s" package)
       (package-install package))))
 
 (exec-path-from-shell-initialize)
 
-(defvar dist-elisp (concat emacsmoduler-path "/dist/elisp/"))
-(defvar local-elisp (concat emacsmoduler-path "/local/elisp/"))
+(defvar dist-elisp (concat emacsmoduler-path "dist/elisp/"))
+(defvar local-elisp (concat emacsmoduler-path "local/elisp/"))
  
 (add-to-list 'load-path dist-elisp)
 (add-to-list 'load-path local-elisp)
@@ -76,7 +77,7 @@
 (when (string-equal "gnu/linux" system-type)  
     (require 'dbus))
   
-(when (string-equal "darwin"    system-type)  
+(when (string-equal "darwin" system-type)  
     ;; Standard browser.
     (setq browse-url-generic-program "open")
     (setenv "PATH" (concat
@@ -87,8 +88,7 @@
     '(progn
        (add-to-list 'TeX-output-view-style
                     '("^pdf$" "." "open %o %(outpage)"))
-       (add-to-list 'LaTeX-verbatim-environments "comment")))
-  )
+       (add-to-list 'LaTeX-verbatim-environments "comment"))))
  
 (when (string-equal "windows-nt"   system-type)
   (setq w32-apps-modifier 'super)
@@ -96,9 +96,9 @@
   (defun speck-mode (s) (interactive) nil))
  
 ;;; Settings ====================
-(setq undo-tree-mode-lighter "")
-
-(global-undo-tree-mode)
+(when (package-installed-p 'undo-tree)
+  (setq undo-tree-mode-lighter "")
+  (global-undo-tree-mode))
 
 ;; Add parts of each file's directory to the buffer name if not unique
 (require 'uniquify)
@@ -115,11 +115,11 @@
 (auto-compression-mode t)
 
 ;; UTF-8 please
-(setq locale-coding-system 'utf-8) ; pretty
-(set-terminal-coding-system 'utf-8) ; pretty
-(set-keyboard-coding-system 'utf-8) ; pretty
-(set-selection-coding-system 'utf-8) ; please
-(prefer-coding-system 'utf-8) ; with sugar on top
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
 
 (setq fill-column 80)
 
@@ -146,29 +146,37 @@
 (global-set-key (kbd "<f7>") 'fold-dwim-toggle)
 (global-set-key (kbd "<M-f7>") 'fold-dwim-hide-all)
 (global-set-key (kbd "<S-M-f7>") 'fold-dwim-show-all)
- 
-(ido-mode 1)
 
-(ido-ubiquitous-mode 1)
+(when (package-installed-p 'ido)
+  (ido-mode 1)
+  (ido-everywhere 1)
+  (setq ido-file-extensions-order '(".tex" t))
+  (defun ido-find-tag ()
+    "Find a tag using ido"
+    (interactive)
+    (tags-completion-table)
+    (let (tag-names)
+      (mapc (lambda (x)
+              (unless (integerp x)
+                (push (prin1-to-string x t) tag-names)))
+            tags-completion-table)
+      (find-tag (ido-completing-read "Tag: " tag-names nil nil
+                                     (thing-at-point 'symbol)))))
+  (when (package-installed-p 'ido-completing-read+) 
+    (ido-ubiquitous-mode 1)))
 
-(setq ido-file-extensions-order '(".tex" t))
- 
-(defun ido-find-tag ()
-  "Find a tag using ido"
-  (interactive)
-  (tags-completion-table)
-  (let (tag-names)
-    (mapc (lambda (x)
-            (unless (integerp x)
-              (push (prin1-to-string x t) tag-names)))
-          tags-completion-table)
-    (find-tag (ido-completing-read "Tag: " tag-names nil nil (thing-at-point 'symbol)))))
- 
+
 ;Hacks to make AUCtex happy
 (setq byte-compile-verbose t)
 (setq byte-compile-warnings t)
 (setq TeX-save-query nil) ;;autosave before compiling
- 
+
+(let ((byte-compile-warnings '())
+      (byte-compile-verbose nil))
+  (autoload 'browse-kill-ring "browse-kill-ring" "" t))
+
+(eval-after-load 'org-mode
+  (progn 
 (add-hook 'org-mode-hook 'reftex-mode)
 (add-hook 'org-mode-hook 'highlight-fixmes-mode)
  
@@ -195,7 +203,8 @@
          "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
         ("T" "THESIS" entry (file "~/Dropbox/thesis/notes.org"))
         ("h" "Habit" entry (file+headline "~/Dropbox/org/habits.org" "Habits")
-         "* NEXT %?\n%U\n%a\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))
+         "* NEXT %?\n%U\n%a\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))))
+
 (require 'fixpath)
  
 (setq-default indent-tabs-mode nil)
@@ -203,11 +212,6 @@
 (defun yes-or-no-p (prompt)
   "redirects to y-or-n-p"
   (y-or-n-p prompt))
- 
- 
-(let ((byte-compile-warnings '())
-      (byte-compile-verbose nil))
-  (autoload 'browse-kill-ring "browse-kill-ring" "" t))
   
 ;;; By Stefan Monnier <foo at acm.org>.
 ;;; From: http://www.emacswiki.org/emacs/UnfillParagraph
@@ -216,7 +220,7 @@
   (interactive)
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
- 
+
 (when (or (functionp 'cua-mode) (featurep 'cua))
   (cua-mode 1)
   (setq
@@ -225,18 +229,18 @@
    cua-enable-register-prefix (quote not-ctrl-u)
    cua-highlight-region-shift-only nil
    cua-keep-region-after-copy nil)
-(define-key cua--rectangle-keymap " "     'self-insert-command)
-(define-key cua--rectangle-keymap "("     'self-insert-command)
-(define-key cua--rectangle-keymap ")"     'self-insert-command))
+(define-key cua--rectangle-keymap " " 'self-insert-command)
+(define-key cua--rectangle-keymap "(" 'self-insert-command)
+(define-key cua--rectangle-keymap ")" 'self-insert-command))
  
-(setq completion-ignore-case t      ; ignore case when completing...
-  read-file-name-completion-ignore-case t) ; ...filenames too
+(setq completion-ignore-case t; ignore case when completing...
+  read-file-name-completion-ignore-case t); ...filenames too
  
 ;; Allow recursive minibuffers
 (setq enable-recursive-minibuffers t)
 
-(setq search-highlight t)           ; highlight when searching... 
-(setq query-replace-highlight t)    ; ...and replacing
+(setq search-highlight t); highlight when searching... 
+(setq query-replace-highlight t); ...and replacing
  
 (savehist-mode 1)
 (column-number-mode 1)
@@ -274,7 +278,8 @@
 ;          "-e 'keycode 115 = Hyper_R' "
 ;           "-e 'add mod4 = Hyper_R' ")))
  
-(setq speedbar-directory-unshown-regexp "^\\(.HG\\|.CVS\\|.RCS\\|.SCCS\\|_DARCS\\|\\..*\\)\\'")
+(setq speedbar-directory-unshown-regexp
+      "^\\(.HG\\|.CVS\\|.RCS\\|.SCCS\\|_DARCS\\|\\..*\\)\\'")
 (setq speedbar-use-images nil) 
  
 (require 'better-registers)
@@ -287,34 +292,35 @@
 ;(command-frequency-mode 1)
 ;(command-frequency-table-load "~/.emacs.frequencies")
 ;(command-frequency-autosave-mode 1)
- 
-(load "ido")
-(ido-mode 1)
- 
+
 (autoload 'vc-ediff "vc-ediff" "" t)
  
 ;; (require 'find-cmd) ;; Deactivated for now
 ;; (autoload  "project-root") ;; Deactivated for now
- 
+
 (autoload 'mindent-mode "mindent" "" t) ; Doesn't seem to work
  
-(setq custom-file (concat emacsmoduler-path "/custom.el"))
+(setq custom-file
+      (concat emacsmoduler-path
+              "custom.el"))
+
 (load custom-file)
  
 (define-key isearch-mode-map [(control shift o)]
-      (lambda () (interactive)
-	(let ((shk-search-string isearch-string))
-	  (grep-compute-defaults)
-	  (lgrep (if isearch-regexp shk-search-string (regexp-quote shk-search-string))
-		 (format "*.%s" (file-name-extension (buffer-file-name)))
-		 default-directory)
-	  (isearch-abort))))
- 
+  (lambda () (interactive)
+    (let ((shk-search-string isearch-string))
+      (grep-compute-defaults)
+      (lgrep (if isearch-regexp shk-search-string (regexp-quote shk-search-string))
+             (format "*.%s" (file-name-extension (buffer-file-name)))
+             default-directory)
+      (isearch-abort))))
+
 (defun isearch-occur ()
-      "Invoke `occur' from within isearch."
-      (interactive)
-      (let ((case-fold-search isearch-case-fold-search))
-	(occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
+  "Invoke `occur' from within isearch."
+  (interactive)
+  (let ((case-fold-search isearch-case-fold-search))
+    (occur (if isearch-regexp isearch-string
+             (regexp-quote isearch-string)))))
  
 (define-key isearch-mode-map (kbd "C-M-o") 'isearch-occur)
  
@@ -365,28 +371,26 @@
 	     (point-max))))
       (if (funcall search-direction re-curword nil t)
 	  (forward-char offset)
-	;; else
 	(progn (goto-char startover-point)
 	       (if (funcall search-direction re-curword nil t)
-		   (progn (message "Searching from bottom. %s" (what-line))
-			  (forward-char offset))
-		 ;; else
-		 (message "Searching from bottom: Not found"))
-	       )))))
+		   (progn
+                     (message "Searching from bottom. %s" (what-line))
+                     (forward-char offset))
+		 (message "Searching from bottom: Not found")))))))
  
 (add-hook 'server-switch-hook 
 	    (lambda ()
 	      (when (current-local-map)
 		(use-local-map (copy-keymap (current-local-map))))
-	      (local-set-key (kbd "C-c C-c") '(lambda ()
-						(interactive)
-						(save-buffer)
-						(server-edit)))))
- 
+	      (local-set-key (kbd "C-c C-c")
+                             '(lambda ()
+                                (interactive)
+                                (save-buffer)
+                                (server-edit)))))
+
 ;;;; Things related to different modes ====================
  
-;;; mmm
- 
+;;; mmm 
 (add-to-list 'load-path (concat dist-elisp "mmm-mode"))
 (load "mmm-auto")
  
@@ -537,8 +541,7 @@
      (defun flymake-get-tex-args (file-name)
        (list "chktex" (list "-g0" "-r" "-l"
 			    (expand-file-name "~/.chktexrc")
-			    "-I" "-q" "-v0" file-name)))
-     ))
+			    "-I" "-q" "-v0" file-name)))))
  
 ;;; makefile
  
@@ -598,7 +601,6 @@
 ;; Things we would like:
 ;; Rope
 ;; pyflakes // flymake
-;; Pymacs for some sucky reason doesn't work
 (add-hook 'python-mode-hook
 	  '(lambda () (flymake-mode 1)))
  
@@ -643,12 +645,15 @@
     (insert-file-contents filePath)
     (split-string
      (buffer-string) "\n" t)) )
- 
-(yas-global-mode 1)
-(setq yas-prompt-functions '(yas/dropdown-prompt
-			     yas/ido-prompt
-			     yas/completing-prompt))
-(yas-load-directory (concat emacsmoduler-path "/snippets"))
+
+(when (package-installed-p 'yasnippet)
+  (yas-global-mode 1)
+  (setq yas-prompt-functions
+        '(yas/dropdown-prompt
+          yas/ido-prompt
+          yas/completing-(point)rompt))
+  (yas-load-directory (concat emacsmoduler-path "snippets")))
+
  
 ;;; html
  
@@ -775,15 +780,15 @@ If we're not in a comment, just return nil."
 
 ;;; grep
  
-(setq grep-o-matic-repository-root-function 'repository-root)
-(repository-root "") ;; to activate load
-(add-to-list 'repository-root-matchers repository-root-matcher/git)
-(add-to-list 'repository-root-matchers repository-root-matcher/hg)
-(add-to-list 'repository-root-matchers repository-root-matcher/darcs)
-(add-to-list 'repository-root-matchers repository-root-matcher/autoconf)
-(add-to-list 'repository-root-matchers repository-root-matcher/bzr)
-(add-to-list 'repository-root-matchers repository-root-matcher/svn)
-(add-to-list 'repository-root-matchers repository-root-matcher/cvs)
+;; (setq grep-o-matic-repository-root-function 'repository-root)
+;; (repository-root "") ;; to activate load
+;; (add-to-list 'repository-root-matchers repository-root-matcher/git)
+;; (add-to-list 'repository-root-matchers repository-root-matcher/hg)
+;; (add-to-list 'repository-root-matchers repository-root-matcher/darcs)
+;; (add-to-list 'repository-root-matchers repository-root-matcher/autoconf)
+;; (add-to-list 'repository-root-matchers repository-root-matcher/bzr)
+;; (add-to-list 'repository-root-matchers repository-root-matcher/svn)
+;; (add-to-list 'repository-root-matchers repository-root-matcher/cvs)
  
  
 ;;; compilation
@@ -850,13 +855,11 @@ string).  It returns t if a new expansion is found, nil otherwise."
       (he-init-string (he-dabbrev-beg) (point))
       (set-marker he-search-loc-backward he-string-beg)
       (set-marker he-search-loc-forward he-string-end))
-
     (if (not (equal he-search-string ""))
         (save-excursion
           (save-restriction
             (if hippie-expand-no-restriction
                 (widen))
-
             (let (forward-point
                   backward-point
                   forward-distance
@@ -1140,12 +1143,12 @@ string).  It returns t if a new completion is found, nil otherwise."
 (load "agda-input")
 (load "agda2")
  
-(global-rainbow-delimiters-mode 1)
-(set-face-attribute 'rainbow-delimiters-unmatched-face
-  nil
-  :box
-   '(:line-width 2 :color "Red" :style released-button)
-  :foreground  "Red")
+;; (global-rainbow-delimiters-mode 1)
+;; (set-face-attribute 'rainbow-delimiters-unmatched-face
+;;   nil
+;;   :box
+;;    '(:line-width 2 :color "Red" :style released-button)
+;;   :foreground  "Red")
 
 (load "small") ;;; Some more homebrewed commands
  
