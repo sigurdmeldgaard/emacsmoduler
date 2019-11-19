@@ -129,7 +129,7 @@
 ;; Show me empty lines after buffer end
 (set-default 'indicate-empty-lines t)
 
-(set-fringe-style 0)
+(set-fringe-style nil)
  
 (defconst use-backup-dir t)
 (setq backup-directory-alist (quote ((".*" . "~/backup/temp/")))
