@@ -35,7 +35,6 @@
  '(lpr-command "kprinter")
  '(nxml-slash-auto-complete-flag t t)
  '(org-agenda-files (quote ("~/Dropbox/org/main.org")))
- '(package-archives (quote (("gnu" . "http://elpa.gnu.org/packages/") ("marmelade" . "http://marmalade-repo.org/packages/"))))
  '(python-python-command "python")
  '(safe-local-variable-values (quote ((TeX-master . rapport) (TeX-master . "rapport"))))
  '(scheme-program-name "guile")
